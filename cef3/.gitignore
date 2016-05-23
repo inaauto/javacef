@@ -1,0 +1,11 @@
+# Ignore everything in out directory
+out/
+# Ignore downloaded gyp tool
+tools/gyp/
+# Ignore Visual Studio files (generated)
+**/*.sln
+**/*.suo
+**/*.vcxproj*
+**/*sdf
+# Ignore compiled Python
+**/*.pyc
