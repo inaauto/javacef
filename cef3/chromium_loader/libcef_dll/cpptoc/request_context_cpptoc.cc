@@ -16,7 +16,9 @@
 #include "libcef_dll/cpptoc/value_cpptoc.h"
 #include "libcef_dll/ctocpp/completion_callback_ctocpp.h"
 #include "libcef_dll/ctocpp/request_context_handler_ctocpp.h"
+#include "libcef_dll/ctocpp/resolve_callback_ctocpp.h"
 #include "libcef_dll/ctocpp/scheme_handler_factory_ctocpp.h"
+#include "libcef_dll/transfer_util.h"
 
 
 // GLOBAL FUNCTIONS - Body may be edited by hand.
@@ -350,6 +352,92 @@ int CEF_CALLBACK request_context_set_preference(
   return _retval;
 }
 
+void CEF_CALLBACK request_context_clear_certificate_exceptions(
+    struct _cef_request_context_t* self, cef_completion_callback_t* callback) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+  // Unverified params: callback
+
+  // Execute
+  CefRequestContextCppToC::Get(self)->ClearCertificateExceptions(
+      CefCompletionCallbackCToCpp::Wrap(callback));
+}
+
+void CEF_CALLBACK request_context_close_all_connections(
+    struct _cef_request_context_t* self, cef_completion_callback_t* callback) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+  // Unverified params: callback
+
+  // Execute
+  CefRequestContextCppToC::Get(self)->CloseAllConnections(
+      CefCompletionCallbackCToCpp::Wrap(callback));
+}
+
+void CEF_CALLBACK request_context_resolve_host(
+    struct _cef_request_context_t* self, const cef_string_t* origin,
+    cef_resolve_callback_t* callback) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+  // Verify param: origin; type: string_byref_const
+  DCHECK(origin);
+  if (!origin)
+    return;
+  // Verify param: callback; type: refptr_diff
+  DCHECK(callback);
+  if (!callback)
+    return;
+
+  // Execute
+  CefRequestContextCppToC::Get(self)->ResolveHost(
+      CefString(origin),
+      CefResolveCallbackCToCpp::Wrap(callback));
+}
+
+cef_errorcode_t CEF_CALLBACK request_context_resolve_host_cached(
+    struct _cef_request_context_t* self, const cef_string_t* origin,
+    cef_string_list_t resolved_ips) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return ERR_FAILED;
+  // Verify param: origin; type: string_byref_const
+  DCHECK(origin);
+  if (!origin)
+    return ERR_FAILED;
+  // Verify param: resolved_ips; type: string_vec_byref
+  DCHECK(resolved_ips);
+  if (!resolved_ips)
+    return ERR_FAILED;
+
+  // Translate param: resolved_ips; type: string_vec_byref
+  std::vector<CefString> resolved_ipsList;
+  transfer_string_list_contents(resolved_ips, resolved_ipsList);
+
+  // Execute
+  cef_errorcode_t _retval = CefRequestContextCppToC::Get(
+      self)->ResolveHostCached(
+      CefString(origin),
+      resolved_ipsList);
+
+  // Restore param: resolved_ips; type: string_vec_byref
+  cef_string_list_clear(resolved_ips);
+  transfer_string_list_contents(resolved_ipsList, resolved_ips);
+
+  // Return type: simple
+  return _retval;
+}
+
 }  // namespace
 
 
@@ -374,6 +462,11 @@ CefRequestContextCppToC::CefRequestContextCppToC() {
   GetStruct()->get_all_preferences = request_context_get_all_preferences;
   GetStruct()->can_set_preference = request_context_can_set_preference;
   GetStruct()->set_preference = request_context_set_preference;
+  GetStruct()->clear_certificate_exceptions =
+      request_context_clear_certificate_exceptions;
+  GetStruct()->close_all_connections = request_context_close_all_connections;
+  GetStruct()->resolve_host = request_context_resolve_host;
+  GetStruct()->resolve_host_cached = request_context_resolve_host_cached;
 }
 
 template<> CefRefPtr<CefRequestContext> CefCppToC<CefRequestContextCppToC,

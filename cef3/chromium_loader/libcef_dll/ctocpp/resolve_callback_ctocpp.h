@@ -10,33 +10,33 @@
 // for more information.
 //
 
-#ifndef CEF_LIBCEF_DLL_CTOCPP_GEOLOCATION_HANDLER_CTOCPP_H_
-#define CEF_LIBCEF_DLL_CTOCPP_GEOLOCATION_HANDLER_CTOCPP_H_
+#ifndef CEF_LIBCEF_DLL_CTOCPP_RESOLVE_CALLBACK_CTOCPP_H_
+#define CEF_LIBCEF_DLL_CTOCPP_RESOLVE_CALLBACK_CTOCPP_H_
 #pragma once
 
 #ifndef BUILDING_CEF_SHARED
 #pragma message("Warning: "__FILE__" may be accessed DLL-side only")
 #else  // BUILDING_CEF_SHARED
 
-#include "include/cef_geolocation_handler.h"
-#include "include/capi/cef_geolocation_handler_capi.h"
+#include <vector>
+#include "include/cef_request_context.h"
+#include "include/capi/cef_request_context_capi.h"
+#include "include/cef_scheme.h"
+#include "include/capi/cef_scheme_capi.h"
 #include "libcef_dll/ctocpp/ctocpp.h"
 
 // Wrap a C structure with a C++ class.
 // This class may be instantiated and accessed DLL-side only.
-class CefGeolocationHandlerCToCpp
-    : public CefCToCpp<CefGeolocationHandlerCToCpp, CefGeolocationHandler,
-        cef_geolocation_handler_t> {
+class CefResolveCallbackCToCpp
+    : public CefCToCpp<CefResolveCallbackCToCpp, CefResolveCallback,
+        cef_resolve_callback_t> {
  public:
-  CefGeolocationHandlerCToCpp();
+  CefResolveCallbackCToCpp();
 
-  // CefGeolocationHandler methods.
-  bool OnRequestGeolocationPermission(CefRefPtr<CefBrowser> browser,
-      const CefString& requesting_url, int request_id,
-      CefRefPtr<CefGeolocationCallback> callback) override;
-  void OnCancelGeolocationPermission(CefRefPtr<CefBrowser> browser,
-      int request_id) override;
+  // CefResolveCallback methods.
+  void OnResolveCompleted(cef_errorcode_t result,
+      const std::vector<CefString>& resolved_ips) override;
 };
 
 #endif  // BUILDING_CEF_SHARED
-#endif  // CEF_LIBCEF_DLL_CTOCPP_GEOLOCATION_HANDLER_CTOCPP_H_
+#endif  // CEF_LIBCEF_DLL_CTOCPP_RESOLVE_CALLBACK_CTOCPP_H_

@@ -772,7 +772,11 @@ BrowserOpenGLView* GLView(NSView* view) {
                                         clickCount:1
                                           pressure:1.0];
 
-  [window dragImage:nil
+  // TODO(cef): Pass a non-nil value to dragImage (see issue #1715). For now
+  // work around the "callee requires a non-null argument" error that occurs
+  // when building with the 10.11 SDK.
+  id nilArg = nil;
+  [window dragImage:nilArg
                  at:position
              offset:NSZeroSize
               event:dragEvent
@@ -1097,6 +1101,19 @@ BrowserOpenGLView* GLView(NSView* view) {
 
 - (float)getDeviceScaleFactor {
   return device_scale_factor_;
+}
+
+- (void)viewDidChangeBackingProperties {
+  const CGFloat device_scale_factor = [self getDeviceScaleFactor];
+
+  if (device_scale_factor == device_scale_factor_)
+    return;
+
+  CefRefPtr<CefBrowser> browser = [self getBrowser];
+  if (browser) {
+    browser->GetHost()->NotifyScreenInfoChanged();
+    browser->GetHost()->WasResized();
+  }
 }
 
 - (bool)isOverPopupWidgetX:(int)x andY:(int)y {
