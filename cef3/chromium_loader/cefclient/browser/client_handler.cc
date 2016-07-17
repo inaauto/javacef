@@ -140,7 +140,7 @@ ClientHandler::ClientHandler(Delegate* delegate,
     startup_url_(startup_url),
     delegate_(delegate),
     browser_count_(0),
-    console_log_file_(MainContextImpl::GetConsoleLogPath()),
+    console_log_file_(MainContext::Get()->GetConsoleLogPath()),
     first_console_message_(true),
     focus_on_editable_field_(false) {
   DCHECK(!console_log_file_.empty());
@@ -303,7 +303,7 @@ void ClientHandler::OnBeforeDownload(
   CEF_REQUIRE_UI_THREAD();
 
   // Continue the download and show the "Save As" dialog.
-  callback->Continue(MainContextImpl::GetDownloadPath(suggested_name), true);
+  callback->Continue(MainContext::Get()->GetDownloadPath(suggested_name), true);
 }
 
 void ClientHandler::OnDownloadUpdated(
@@ -727,11 +727,10 @@ bool ClientHandler::CreatePopupWindow(
 
   // The popup browser will be parented to a new native window.
   // Don't show URL bar and navigation buttons on DevTools windows.
-  //MainContext::Get()->GetRootWindowManager()->CreateRootWindowAsPopup(
-  //    !is_devtools, is_osr(), popupFeatures, windowInfo, client, settings);
+  MainContext::Get()->GetRootWindowManager()->CreateRootWindowAsPopup(
+      !is_devtools, is_osr(), popupFeatures, windowInfo, client, settings);
 
-  // TODO: Fix creating popup windows.
-  return false;
+  return true;
 }
 
 

@@ -13,11 +13,13 @@
 #include <direct.h>
 #include <sstream>
 #include <string>
+#include "include/base/cef_scoped_ptr.h"
 #include "include/cef_app.h"
 #include "include/cef_browser.h"
 #include "include/cef_frame.h"
 #include "include/cef_runnable.h"
 #include "cefclient/browser/client_app_browser.h"
+#include "cefclient/browser/main_context_impl.h"
 #include "cefclient/browser/client_handler.h"
 #include "cefclient/browser/cookie_handler.h"
 #include "cefclient/common/client_switches.h"
@@ -57,6 +59,11 @@ JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1init
 
   // Parse command line arguments. The passed in values are ignored on Windows.
   //AppInitCommandLine(0, NULL);
+  CefRefPtr<CefCommandLine> command_line = CefCommandLine::CreateCommandLine();
+  //command_line->InitFromString(::GetCommandLineW());
+
+  // Create the main context object.
+  scoped_ptr<client::MainContextImpl> context(new client::MainContextImpl(command_line, true));
 
   CefSettings settings;
 
@@ -79,7 +86,8 @@ JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1init
 #endif
 
   // Initialize CEF.
-  CefInitialize(main_args, settings, app.get(), NULL);
+  //CefInitialize(main_args, settings, app.get(), NULL);
+  context->Initialize(main_args, settings, app.get(), NULL);
 
   HWND hMain;
   hMain = (HWND)((void*)hwnd);
