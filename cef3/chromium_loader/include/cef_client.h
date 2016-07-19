@@ -59,6 +59,10 @@
 
 #include "chromium_loader/chromium_settings.h"
 
+#if defined(OS_LINUX)
+#include <gtk/gtk.h>
+#endif
+
 ///
 // Implement this interface to provide handler implementations.
 ///
