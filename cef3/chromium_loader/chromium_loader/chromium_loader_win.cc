@@ -32,9 +32,6 @@ using ClientHandler = client::ClientHandler;
 
 client::MainMessageLoop *message_loop;
 
-char szWorkingDir[MAX_PATH];  // The current working directory
-//bool use_message_loop = false;
-
 HWND mainBrowserHandle = NULL;
 
 void GetBrowserWindowInfo(CefWindowInfo& info, CefWindowHandle handle) {
@@ -53,10 +50,6 @@ JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1init
   CefMainArgs main_args(GetModuleHandle(NULL));
   CefRefPtr<client::ClientApp> app(new client::ClientAppBrowser);
 
-  // Retrieve the current working directory.
-  if (_getcwd(szWorkingDir, MAX_PATH) == NULL)
-    szWorkingDir[0] = 0;
-
   // Parse command line arguments. The passed in values are ignored on Windows.
   //AppInitCommandLine(0, NULL);
   CefRefPtr<CefCommandLine> command_line = CefCommandLine::CreateCommandLine();
@@ -70,24 +63,33 @@ JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1init
   // Populate the settings based on command line arguments.
   //AppGetSettings(settings);
 
-  //settings.multi_threaded_message_loop = use_message_loop;
+  // Populate the settings based on argument provided from Java
+  populate_cef_settings(env, chromiumset, settings);
+
+  // if set to true, the process crashes in SWT
   settings.multi_threaded_message_loop = false;
-  settings.log_severity = LOGSEVERITY_DISABLE;
-  settings.no_sandbox = true;
-
-  CefString path = CefString(szWorkingDir);
-
-#if defined(WIN32)
-#ifndef _WIN64
-  CefString(&settings.browser_subprocess_path) = path.ToString() + "\\..\\cef_runtime\\win32\\cefclient.exe";
-#else
-  CefString(&settings.browser_subprocess_path) = path.ToString() + "\\..\\cef_runtime\\win64\\cefclient.exe";
-#endif
-#endif
 
   // Initialize CEF.
   //CefInitialize(main_args, settings, app.get(), NULL);
   context->Initialize(main_args, settings, app.get(), NULL);
+
+  // log all init settings
+  DLOG(INFO) << "settings.no_sandbox = " << settings.no_sandbox;
+  DLOG(INFO) << "settings.multi_threaded_message_loop = " << settings.multi_threaded_message_loop;
+  DLOG(INFO) << "settings.persist_session_cookies = " << settings.persist_session_cookies;
+  DLOG(INFO) << "settings.persist_user_preferences = " << settings.persist_user_preferences;
+  DLOG(INFO) << "settings.ignore_certificate_errors = " << settings.ignore_certificate_errors;
+  DLOG(INFO) << "settings.log_severity = " << settings.log_severity;
+  DLOG(INFO) << "settings.remote_debugging_port = " << settings.remote_debugging_port;
+  DLOG(INFO) << "settings.uncaught_exception_stack_size = " << settings.uncaught_exception_stack_size;
+  DLOG(INFO) << "settings.browser_subprocess_path = " << (std::string)CefString(&settings.browser_subprocess_path);
+  DLOG(INFO) << "settings.resources_dir_path = " << (std::string)CefString(&settings.resources_dir_path);
+  DLOG(INFO) << "settings.locales_dir_path = " << (std::string)CefString(&settings.locales_dir_path);
+  DLOG(INFO) << "settings.cache_path = " << (std::string)CefString(&settings.cache_path);
+  DLOG(INFO) << "settings.user_data_path = " << (std::string)CefString(&settings.user_data_path);
+  DLOG(INFO) << "settings.locale = " << (std::string)CefString(&settings.locale);
+  DLOG(INFO) << "settings.accept_language_list = " << (std::string)CefString(&settings.accept_language_list);
+  DLOG(INFO) << "settings.log_file = " << (std::string)CefString(&settings.log_file);
 
   HWND hMain;
   hMain = (HWND)((void*)hwnd);
@@ -101,7 +103,7 @@ JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1init
   env->ReleaseStringUTFChars(url, chr);
 
   // NOTE: This function (browser_init) should only be called ONCE in one process,
-  // which means to call CefInitialize in the first broswer creation, and call 
+  // which means to call CefInitialize in the first browser creation, and call 
   // CefShutdown in the exit of the process. Repeated calls to this function will 
   // NOT work, because the web page will not render. Most probably a bug in cef.
   set_jvm(env, jobj);
@@ -110,19 +112,17 @@ JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1init
   // Have to be here and use own jnienv to avoid errors.
   get_browser_settings(env, chromiumset, gh->csettings);
 
-  message_loop = new client::MainMessageLoopStd;
-  message_loop->Run();
-  //CefRunMessageLoop();
-  cleanup_jvm(env);
-  CefShutdown();
-  /*if (!message_loop) {
+  if (gh->csettings.run_modal_message_loop_in_init) {
     // Run the CEF message loop. This function will block until the application
     // recieves a WM_QUIT message.
-    CefRunMessageLoop();
+    message_loop = new client::MainMessageLoopStd;
+    message_loop->Run();
+    //CefRunMessageLoop();
     cleanup_jvm(env);
     CefShutdown();
-  }*/
-  LOG(INFO) << "Exit init method!";
+  }
+
+  DLOG(INFO) << "Exit init method!";
 }
 
 JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1new
@@ -135,6 +135,12 @@ JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1new
   env->ReleaseStringUTFChars(url, chr);
   send_handler(env, jobj, (jlong)(void*)gh);
   get_browser_settings(env, chromiumset, gh->csettings);
+}
+
+JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1message_1loop
+  (JNIEnv *env, jobject jobj)
+{
+  CefDoMessageLoopWork();
 }
 
 JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1close
@@ -273,10 +279,6 @@ JNIEXPORT jlong JNICALL Java_org_embedded_browser_DownloadWindow_getReceivedN
 }
 
 // Global functions
-
-std::string AppGetWorkingDirectory() {
-  return szWorkingDir;
-}
 
 void AppQuitMessageLoop() {
   /*

@@ -71,7 +71,7 @@ public class Chromium extends Canvas {
 		if (inited) {
 			tab = true;
 			browser_new(hwnd, id, url, chromeset);
-		} else if (OS_Windows) {
+		} else if (OS_Windows && chromeset.isSeparateMessageLoop()) {
 			init = new Thread(new Runnable() {
 				public void run() {
 					browser_init(hwnd, url, chromeset);

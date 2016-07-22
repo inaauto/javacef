@@ -10,7 +10,8 @@
 #include <map>
 
 struct ChromiumSettings {
-  bool allow_right_button;
+  bool allow_right_button = FALSE;
+  bool run_modal_message_loop_in_init = TRUE;
 
   std::map<std::string, std::string> cookies;
 };
