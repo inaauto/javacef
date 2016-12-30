@@ -56,7 +56,7 @@ JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1init
   //command_line->InitFromString(::GetCommandLineW());
 
   // Create the main context object.
-  scoped_ptr<client::MainContextImpl> context(new client::MainContextImpl(command_line, true));
+  scoped_ptr<client::MainContextImpl> context(new client::MainContextImpl(command_line, false));
 
   CefSettings settings;
 
@@ -119,7 +119,8 @@ JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1init
     message_loop->Run();
     //CefRunMessageLoop();
     cleanup_jvm(env);
-    CefShutdown();
+    //CefShutdown();
+    context->Shutdown();
   }
 
   DLOG(INFO) << "Exit init method!";
@@ -169,8 +170,11 @@ JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1shutdown
   if (g_handler_local.get() && g_handler_local->GetBrowser() &&
       g_handler_local->GetBrowser()->GetHost()->GetWindowHandle()) {
     //g_handler_local->GetBrowser()->GetHost()->ParentWindowWillClose();
-    g_handler_local->GetBrowser()->GetHost()->CloseBrowser(true);
+    //g_handler_local->GetBrowser()->GetHost()->CloseBrowser(true);
     mainBrowserHandle = g_handler_local->GetBrowser()->GetHost()->GetWindowHandle();
+
+    // Exit main message loop
+    g_handler_local->Quit();
   }
 }
 

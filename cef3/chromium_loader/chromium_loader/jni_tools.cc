@@ -166,7 +166,7 @@ void get_browser_settings(JNIEnv* env, jobject jcset, ChromiumSettings& cset)
 {
   jclass cls = env->FindClass("org/embedded/browser/ChromeSettings");
 
-  jfieldID allow_right_button = env->GetFieldID(cls, "allow_right_button", "Z");
+  jfieldID allow_right_button = env->GetFieldID(cls, "rightButtonAllowed", "Z");
   cset.allow_right_button = (bool)env->GetBooleanField(jcset, allow_right_button);
 
   jfieldID run_modal_message_loop_in_init = env->GetFieldID(cls, "separateMessageLoop", "Z");
@@ -233,7 +233,7 @@ void populate_cef_settings(JNIEnv* env, jobject jcset, CefSettings& cef_settings
 
   // get all boolean settings
   
-  cef_settings.multi_threaded_message_loop = get_setting_boolean(env, cls, jcset, "multiThreadedMessageLoop");
+  //cef_settings.multi_threaded_message_loop = get_setting_boolean(env, cls, jcset, "multiThreadedMessageLoop");
   cef_settings.no_sandbox = get_setting_boolean(env, cls, jcset, "noSandbox");
   cef_settings.persist_session_cookies = get_setting_boolean(env, cls, jcset, "persistSessionCookies");
   cef_settings.persist_user_preferences = get_setting_boolean(env, cls, jcset, "persistUserPreferences");

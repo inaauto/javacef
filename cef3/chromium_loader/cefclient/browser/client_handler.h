@@ -258,6 +258,7 @@ class ClientHandler : public CefClient,
   int GetBrowserCount() const;
 
   CefRefPtr<CefBrowser> GetBrowser() { return browser_; }
+  void Quit();
 
   // Show a new DevTools popup window.
   void ShowDevTools(CefRefPtr<CefBrowser> browser,

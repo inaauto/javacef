@@ -103,8 +103,16 @@ public class Chromium extends Canvas {
 					chmap.remove(id);
 					if (tab)
 						browser_close(chptr);
-					else
+					else {
 						browser_shutdown(chptr);
+						if (init != null && init.isAlive()) {
+							try {
+								init.join();
+							} catch (InterruptedException e1) {
+								e1.printStackTrace();
+							}
+						}
+					}
 				}
 			}
 		});

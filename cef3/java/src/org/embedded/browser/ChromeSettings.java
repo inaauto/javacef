@@ -38,7 +38,7 @@ public class ChromeSettings {
 	String tabname;
 	boolean tncascade;
 	
-	boolean allow_right_button, rbcascade;
+	boolean rightButtonAllowed, rbcascade;
 	
 	HashMap<String, String> cookies;
 	String[] keys, values;
@@ -176,7 +176,7 @@ public class ChromeSettings {
 	public ChromeSettings() {
 		tabname = null;
 		tncascade = false;
-		allow_right_button = true;
+		rightButtonAllowed = true;
 		rbcascade = false;
 		cookies = new HashMap<String, String>();
 	}
@@ -193,8 +193,8 @@ public class ChromeSettings {
 		return this;
 	}
 	
-	public ChromeSettings right_button(boolean allow_right_button, boolean cascade) {
-		this.allow_right_button = allow_right_button;
+	public ChromeSettings right_button(boolean rightButtonAllowed, boolean cascade) {
+		this.rightButtonAllowed = rightButtonAllowed;
 		this.rbcascade = cascade;
 		return this;
 	}
@@ -251,6 +251,14 @@ public class ChromeSettings {
 
 	public void setSeparateMessageLoop(boolean separateMessageLoop) {
 		this.separateMessageLoop = separateMessageLoop;
+	}
+
+	public boolean isRightButtonAllowed() {
+		return rightButtonAllowed;
+	}
+
+	public void setRightButtonAllowed(boolean rightButtonAllowed) {
+		this.rightButtonAllowed = rightButtonAllowed;
 	}
 
 	public boolean isNoSandbox() {

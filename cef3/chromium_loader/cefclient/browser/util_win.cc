@@ -28,7 +28,7 @@ WNDPROC SetWndProcPtr(HWND hWnd, WNDPROC wndProc) {
 std::wstring GetResourceString(UINT id) {
   #define MAX_LOADSTRING 100
   TCHAR buff[MAX_LOADSTRING] = {0};
-  LoadString(::GetModuleHandle(NULL), id, buff, MAX_LOADSTRING);
+  LoadString(::GetModuleHandle(L"chromium_loader.dll"), id, buff, MAX_LOADSTRING);
   return buff;
 }
 

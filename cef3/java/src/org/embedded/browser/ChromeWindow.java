@@ -177,7 +177,7 @@ public class ChromeWindow {
 					public void HandleNewWindow(Chromium c, String url) {
 						ChromeSettings csnew = new ChromeSettings(), csprev = c.chromeset;
 						if (csprev.rbcascade)
-							csnew.right_button(csprev.allow_right_button , csprev.rbcascade);
+							csnew.right_button(csprev.rightButtonAllowed , csprev.rbcascade);
 						if (csprev.tncascade)
 							csnew.tabname(csprev.tabname, csprev.tncascade);
 						add_browser(url, csnew);
