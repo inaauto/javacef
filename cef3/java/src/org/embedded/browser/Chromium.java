@@ -71,7 +71,7 @@ public class Chromium extends Canvas {
 		if (inited) {
 			tab = true;
 			browser_new(hwnd, id, url, chromeset);
-		} else if (OS_Windows) {
+		} else if (OS_Windows && chromeset.isSeparateMessageLoop()) {
 			init = new Thread(new Runnable() {
 				public void run() {
 					browser_init(hwnd, url, chromeset);
@@ -103,8 +103,16 @@ public class Chromium extends Canvas {
 					chmap.remove(id);
 					if (tab)
 						browser_close(chptr);
-					else
+					else {
 						browser_shutdown(chptr);
+						if (init != null && init.isAlive()) {
+							try {
+								init.join();
+							} catch (InterruptedException e1) {
+								e1.printStackTrace();
+							}
+						}
+					}
 				}
 			}
 		});

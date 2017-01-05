@@ -9,8 +9,10 @@
 #include <jni.h>
 #include <string>
 
-//char* jstringTostring(JNIEnv*, jstring);
-jstring stringtojstring(JNIEnv*, const char*);
+#include "include/internal/cef_types_wrappers.h"
+
+std::string jstring_to_stdstring(JNIEnv* env, jstring java_string);
+jstring string_to_jstring(JNIEnv* env, const char* pat);
 
 void set_jvm(JNIEnv* env, jobject jobj);
 void cleanup_jvm(JNIEnv* env);
@@ -28,5 +30,6 @@ void send_navstate(int id, bool canGoBack, bool canGoForward);
 
 struct ChromiumSettings;
 void get_browser_settings(JNIEnv* env, jobject jcset, ChromiumSettings& cset);
+void populate_cef_settings(JNIEnv* env, jobject jcset, CefSettings& cset);
 
 #endif // JNI_TOOLS_H

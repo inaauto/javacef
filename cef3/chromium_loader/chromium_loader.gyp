@@ -49,7 +49,7 @@
             '<(java_include_path)/win32',
             '<(SHARED_INTERMEDIATE_DIR)',
           ],
-          'msvs_disabled_warnings': [4800],
+          'msvs_disabled_warnings': [4800,4067],
           'msvs_settings': {
             'VCLinkerTool': {
               # Set /SUBSYSTEM:WINDOWS.

@@ -140,7 +140,7 @@ ClientHandler::ClientHandler(Delegate* delegate,
     startup_url_(startup_url),
     delegate_(delegate),
     browser_count_(0),
-    console_log_file_(MainContextImpl::GetConsoleLogPath()),
+    console_log_file_(MainContext::Get()->GetConsoleLogPath()),
     first_console_message_(true),
     focus_on_editable_field_(false) {
   DCHECK(!console_log_file_.empty());
@@ -150,7 +150,7 @@ ClientHandler::ClientHandler(Delegate* delegate,
   dialog_handler_ = new ClientDialogHandlerGtk();
 #endif
 
-  resource_manager_ = new CefResourceManager();
+  //resource_manager_ = new CefResourceManager();
   //test_runner::SetupResourceManager(resource_manager_);
 
   // Read command line settings.
@@ -209,13 +209,13 @@ void ClientHandler::OnBeforeContextMenu(
       model->AddSeparator();
 
     // Add DevTools items to all context menus.
-    model->AddItem(CLIENT_ID_SHOW_DEVTOOLS, "&Show DevTools");
-    model->AddItem(CLIENT_ID_CLOSE_DEVTOOLS, "Close DevTools");
-    model->AddSeparator();
+    //model->AddItem(CLIENT_ID_SHOW_DEVTOOLS, "&Show DevTools");
+    //model->AddItem(CLIENT_ID_CLOSE_DEVTOOLS, "Close DevTools");
+    //model->AddSeparator();
     model->AddItem(CLIENT_ID_INSPECT_ELEMENT, "Inspect Element");
 
     // Test context menu features.
-    BuildTestMenu(model);
+    //BuildTestMenu(model);
   }
 }
 
@@ -303,7 +303,7 @@ void ClientHandler::OnBeforeDownload(
   CEF_REQUIRE_UI_THREAD();
 
   // Continue the download and show the "Save As" dialog.
-  callback->Continue(MainContextImpl::GetDownloadPath(suggested_name), true);
+  callback->Continue(MainContext::Get()->GetDownloadPath(suggested_name), true);
 }
 
 void ClientHandler::OnDownloadUpdated(
@@ -408,8 +408,10 @@ bool ClientHandler::DoClose(CefRefPtr<CefBrowser> browser) {
   CEF_REQUIRE_UI_THREAD();
 
   // Close the popup window.
-  if (browser->IsPopup())
+  if (browser->IsPopup()) {
+    NotifyBrowserClosing(browser);
     return false;
+  }
 
   // Do NOT close the browser.
   // For windows, PlatformCloseWindow in browser_host_impl_win.cc sends
@@ -727,11 +729,10 @@ bool ClientHandler::CreatePopupWindow(
 
   // The popup browser will be parented to a new native window.
   // Don't show URL bar and navigation buttons on DevTools windows.
-  //MainContext::Get()->GetRootWindowManager()->CreateRootWindowAsPopup(
-  //    !is_devtools, is_osr(), popupFeatures, windowInfo, client, settings);
+  MainContext::Get()->GetRootWindowManager()->CreateRootWindowAsPopup(
+      !is_devtools, is_osr(), popupFeatures, windowInfo, client, settings);
 
-  // TODO: Fix creating popup windows.
-  return false;
+  return true;
 }
 
 
@@ -870,6 +871,19 @@ bool ClientHandler::ExecuteTestMenu(int command_id) {
 
   // Allow default handling to proceed.
   return false;
+}
+
+void ClientHandler::Quit() {
+  if (!CURRENTLY_ON_MAIN_THREAD()) {
+    DLOG(INFO) << "Calling Quit() from the wrong thread...";
+    // Execute this method on the main thread.
+    MAIN_POST_CLOSURE(base::Bind(&ClientHandler::Quit, this));
+    return;
+  }
+
+  DLOG(INFO) << "Finally, calling CefQuitMessageLoop() from the corrent thread...";
+  MainMessageLoop::Get()->Quit();
+  DLOG(INFO) << "CefQuitMessageLoop() completed.";
 }
 
 }  // namespace client
