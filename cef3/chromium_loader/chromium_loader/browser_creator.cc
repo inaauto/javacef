@@ -8,8 +8,8 @@
 #include "include/cef_browser.h"
 #include "include/cef_client.h"
 #include "include/cef_request_context.h"
-#include "cefclient/browser/client_handler.h"
-#include "cefclient/browser/client_handler_std.h"
+#include "tests/cefclient/browser/client_handler.h"
+#include "tests/cefclient/browser/client_handler_std.h"
 
 CefRefPtr<client::ClientHandler> NewBrowser(CefWindowHandle handle,
                                             CefString url) {

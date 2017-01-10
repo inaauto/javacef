@@ -100,26 +100,6 @@ void CefLifeSpanHandlerCToCpp::OnAfterCreated(CefRefPtr<CefBrowser> browser) {
       CefBrowserCppToC::Wrap(browser));
 }
 
-bool CefLifeSpanHandlerCToCpp::RunModal(CefRefPtr<CefBrowser> browser) {
-  cef_life_span_handler_t* _struct = GetStruct();
-  if (CEF_MEMBER_MISSING(_struct, run_modal))
-    return false;
-
-  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
-
-  // Verify param: browser; type: refptr_diff
-  DCHECK(browser.get());
-  if (!browser.get())
-    return false;
-
-  // Execute
-  int _retval = _struct->run_modal(_struct,
-      CefBrowserCppToC::Wrap(browser));
-
-  // Return type: bool
-  return _retval?true:false;
-}
-
 bool CefLifeSpanHandlerCToCpp::DoClose(CefRefPtr<CefBrowser> browser) {
   cef_life_span_handler_t* _struct = GetStruct();
   if (CEF_MEMBER_MISSING(_struct, do_close))
@@ -170,7 +150,7 @@ template<> cef_life_span_handler_t* CefCToCpp<CefLifeSpanHandlerCToCpp,
   return NULL;
 }
 
-#ifndef NDEBUG
+#if DCHECK_IS_ON()
 template<> base::AtomicRefCount CefCToCpp<CefLifeSpanHandlerCToCpp,
     CefLifeSpanHandler, cef_life_span_handler_t>::DebugObjCt = 0;
 #endif

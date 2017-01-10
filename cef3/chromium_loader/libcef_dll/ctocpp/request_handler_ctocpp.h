@@ -14,9 +14,9 @@
 #define CEF_LIBCEF_DLL_CTOCPP_REQUEST_HANDLER_CTOCPP_H_
 #pragma once
 
-#ifndef BUILDING_CEF_SHARED
-#pragma message("Warning: "__FILE__" may be accessed DLL-side only")
-#else  // BUILDING_CEF_SHARED
+#if !defined(BUILDING_CEF_SHARED)
+#error This file can be included DLL-side only
+#endif
 
 #include "include/cef_request_handler.h"
 #include "include/capi/cef_request_handler_capi.h"
@@ -44,7 +44,7 @@ class CefRequestHandlerCToCpp
       CefRefPtr<CefRequest> request) override;
   void OnResourceRedirect(CefRefPtr<CefBrowser> browser,
       CefRefPtr<CefFrame> frame, CefRefPtr<CefRequest> request,
-      CefString& new_url) override;
+      CefRefPtr<CefResponse> response, CefString& new_url) override;
   bool OnResourceResponse(CefRefPtr<CefBrowser> browser,
       CefRefPtr<CefFrame> frame, CefRefPtr<CefRequest> request,
       CefRefPtr<CefResponse> response) override;
@@ -69,6 +69,9 @@ class CefRequestHandlerCToCpp
       cef_errorcode_t cert_error, const CefString& request_url,
       CefRefPtr<CefSSLInfo> ssl_info,
       CefRefPtr<CefRequestCallback> callback) override;
+  bool OnSelectClientCertificate(CefRefPtr<CefBrowser> browser, bool isProxy,
+      const CefString& host, int port, const X509CertificateList& certificates,
+      CefRefPtr<CefSelectClientCertificateCallback> callback) override;
   void OnPluginCrashed(CefRefPtr<CefBrowser> browser,
       const CefString& plugin_path) override;
   void OnRenderViewReady(CefRefPtr<CefBrowser> browser) override;
@@ -76,5 +79,4 @@ class CefRequestHandlerCToCpp
       TerminationStatus status) override;
 };
 
-#endif  // BUILDING_CEF_SHARED
 #endif  // CEF_LIBCEF_DLL_CTOCPP_REQUEST_HANDLER_CTOCPP_H_

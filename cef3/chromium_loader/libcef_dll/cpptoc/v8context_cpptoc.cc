@@ -178,8 +178,8 @@ int CEF_CALLBACK v8context_is_same(struct _cef_v8context_t* self,
 }
 
 int CEF_CALLBACK v8context_eval(struct _cef_v8context_t* self,
-    const cef_string_t* code, struct _cef_v8value_t** retval,
-    struct _cef_v8exception_t** exception) {
+    const cef_string_t* code, const cef_string_t* script_url, int start_line,
+    struct _cef_v8value_t** retval, struct _cef_v8exception_t** exception) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
 
   DCHECK(self);
@@ -197,6 +197,7 @@ int CEF_CALLBACK v8context_eval(struct _cef_v8context_t* self,
   DCHECK(exception);
   if (!exception)
     return 0;
+  // Unverified params: script_url
 
   // Translate param: retval; type: refptr_same_byref
   CefRefPtr<CefV8Value> retvalPtr;
@@ -212,6 +213,8 @@ int CEF_CALLBACK v8context_eval(struct _cef_v8context_t* self,
   // Execute
   bool _retval = CefV8ContextCppToC::Get(self)->Eval(
       CefString(code),
+      CefString(script_url),
+      start_line,
       retvalPtr,
       exceptionPtr);
 
@@ -263,7 +266,7 @@ template<> CefRefPtr<CefV8Context> CefCppToC<CefV8ContextCppToC, CefV8Context,
   return NULL;
 }
 
-#ifndef NDEBUG
+#if DCHECK_IS_ON()
 template<> base::AtomicRefCount CefCppToC<CefV8ContextCppToC, CefV8Context,
     cef_v8context_t>::DebugObjCt = 0;
 #endif

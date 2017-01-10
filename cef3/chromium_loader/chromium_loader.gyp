@@ -5,6 +5,7 @@
 {
   'includes': [
     '../javacef-common.gypi',
+    'cef_paths.gypi',
     'cef_paths2.gypi',
   ],
   'targets': [
@@ -17,7 +18,7 @@
         '../java/java_sources.gyp:build_java',
       ],
       'defines': [
-        'USING_CEF_SHARED',
+        'WRAPPING_CEF_SHARED',
       ],
       'include_dirs': [
         '.',
@@ -26,6 +27,10 @@
       'sources': [
         '<@(includes_common)',
         '<@(includes_wrapper)',
+        '<@(shared_sources_common)',
+        '<@(shared_sources_browser)',
+        '<@(cefclient_sources_common)',
+        '<@(cefclient_sources_browser)',
         '<@(chromium_loader_sources_common)',
       ],
       'xcode_settings': {
@@ -63,6 +68,7 @@
               '-lrpcrt4.lib',
               '-lopengl32.lib',
               '-lglu32.lib',
+              '-limm32.lib',
             ],
           },
           'library_dirs': [
@@ -97,6 +103,11 @@
           ],
           'sources': [
             '<@(includes_win)',
+            '<@(shared_sources_renderer)',
+            '<@(shared_sources_resources)',
+            '<@(shared_sources_win)',
+            '<@(cefclient_sources_renderer)',
+            '<@(cefclient_sources_resources)',
             '<@(cefclient_sources_win)',
             '<@(chromium_loader_sources_win)',
           ],
@@ -115,6 +126,7 @@
           },
           'sources': [
             '<@(includes_mac)',
+            '<@(shared_sources_mac)',
             '<@(cefclient_sources_mac)',
             '<@(chromium_loader_sources_mac)',
           ],
@@ -140,6 +152,11 @@
           },
           'sources': [
             '<@(includes_linux)',
+            '<@(shared_sources_renderer)',
+            '<@(shared_sources_resources)',
+            '<@(shared_sources_linux)',
+            '<@(cefclient_sources_renderer)',
+            '<@(cefclient_sources_resources)',
             '<@(cefclient_sources_linux)',
             '<@(chromium_loader_sources_linux)',
           ],
@@ -151,16 +168,20 @@
       'type': 'static_library',
       'msvs_guid': 'A9D6DC71-C0DC-4549-AEA0-3B15B44E86A9',
       'defines': [
-        'USING_CEF_SHARED',
+        'WRAPPING_CEF_SHARED',
       ],
       'include_dirs': [
         '.',
       ],
       'sources': [
         '<@(includes_common)',
+        '<@(autogen_cpp_includes)',
         '<@(includes_capi)',
+        '<@(autogen_capi_includes)',
         '<@(includes_wrapper)',
+        '<@(libcef_dll_wrapper_sources_base)',
         '<@(libcef_dll_wrapper_sources_common)',
+        '<@(autogen_client_side)',
       ],
       'xcode_settings': {
         'OTHER_CFLAGS': [

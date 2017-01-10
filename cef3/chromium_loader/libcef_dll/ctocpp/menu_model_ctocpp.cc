@@ -10,7 +10,28 @@
 // for more information.
 //
 
+#include "libcef_dll/cpptoc/menu_model_delegate_cpptoc.h"
 #include "libcef_dll/ctocpp/menu_model_ctocpp.h"
+
+
+// STATIC METHODS - Body may be edited by hand.
+
+CefRefPtr<CefMenuModel> CefMenuModel::CreateMenuModel(
+    CefRefPtr<CefMenuModelDelegate> delegate) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Verify param: delegate; type: refptr_diff
+  DCHECK(delegate.get());
+  if (!delegate.get())
+    return NULL;
+
+  // Execute
+  cef_menu_model_t* _retval = cef_menu_model_create(
+      CefMenuModelDelegateCppToC::Wrap(delegate));
+
+  // Return type: refptr_same
+  return CefMenuModelCToCpp::Wrap(_retval);
+}
 
 
 // VIRTUAL METHODS - Body may be edited by hand.
@@ -892,7 +913,7 @@ template<> cef_menu_model_t* CefCToCpp<CefMenuModelCToCpp, CefMenuModel,
   return NULL;
 }
 
-#ifndef NDEBUG
+#if DCHECK_IS_ON()
 template<> base::AtomicRefCount CefCToCpp<CefMenuModelCToCpp, CefMenuModel,
     cef_menu_model_t>::DebugObjCt = 0;
 #endif

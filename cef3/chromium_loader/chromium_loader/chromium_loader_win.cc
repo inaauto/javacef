@@ -17,16 +17,15 @@
 #include "include/cef_app.h"
 #include "include/cef_browser.h"
 #include "include/cef_frame.h"
-#include "include/cef_runnable.h"
-#include "cefclient/browser/client_app_browser.h"
-#include "cefclient/browser/main_context_impl.h"
-#include "cefclient/browser/client_handler.h"
-#include "cefclient/browser/cookie_handler.h"
-#include "cefclient/common/client_switches.h"
+#include "tests/shared/browser/client_app_browser.h"
+#include "tests/cefclient/browser/main_context_impl.h"
+#include "tests/cefclient/browser/client_handler.h"
+#include "tests/cefclient/browser/cookie_handler.h"
+#include "tests/shared/common/client_switches.h"
 #include "browser_creator.h"
 
-#include "cefclient/browser/main_message_loop.h"
-#include "cefclient/browser/main_message_loop_std.h"
+#include "tests/shared/browser/main_message_loop.h"
+#include "tests/shared/browser/main_message_loop_std.h"
 
 using ClientHandler = client::ClientHandler;
 

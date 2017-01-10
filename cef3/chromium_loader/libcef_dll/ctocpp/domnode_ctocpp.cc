@@ -429,6 +429,20 @@ CefString CefDOMNodeCToCpp::GetElementInnerText() {
   return _retvalStr;
 }
 
+CefRect CefDOMNodeCToCpp::GetElementBounds() {
+  cef_domnode_t* _struct = GetStruct();
+  if (CEF_MEMBER_MISSING(_struct, get_element_bounds))
+    return CefRect();
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Execute
+  cef_rect_t _retval = _struct->get_element_bounds(_struct);
+
+  // Return type: simple
+  return _retval;
+}
+
 
 // CONSTRUCTOR - Do not edit by hand.
 
@@ -441,7 +455,7 @@ template<> cef_domnode_t* CefCToCpp<CefDOMNodeCToCpp, CefDOMNode,
   return NULL;
 }
 
-#ifndef NDEBUG
+#if DCHECK_IS_ON()
 template<> base::AtomicRefCount CefCToCpp<CefDOMNodeCToCpp, CefDOMNode,
     cef_domnode_t>::DebugObjCt = 0;
 #endif

@@ -58,7 +58,7 @@ CEF_EXPORT cef_request_context_t* cef_request_context_create_context(
   return CefRequestContextCppToC::Wrap(_retval);
 }
 
-CEF_EXPORT cef_request_context_t* create_context_shared(
+CEF_EXPORT cef_request_context_t* cef_create_context_shared(
     cef_request_context_t* other,
     struct _cef_request_context_handler_t* handler) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
@@ -476,7 +476,7 @@ template<> CefRefPtr<CefRequestContext> CefCppToC<CefRequestContextCppToC,
   return NULL;
 }
 
-#ifndef NDEBUG
+#if DCHECK_IS_ON()
 template<> base::AtomicRefCount CefCppToC<CefRequestContextCppToC,
     CefRequestContext, cef_request_context_t>::DebugObjCt = 0;
 #endif

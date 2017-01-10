@@ -14,9 +14,9 @@
 #define CEF_LIBCEF_DLL_CTOCPP_RENDER_HANDLER_CTOCPP_H_
 #pragma once
 
-#ifndef BUILDING_CEF_SHARED
-#pragma message("Warning: "__FILE__" may be accessed DLL-side only")
-#else  // BUILDING_CEF_SHARED
+#if !defined(BUILDING_CEF_SHARED)
+#error This file can be included DLL-side only
+#endif
 
 #include "include/cef_render_handler.h"
 #include "include/capi/cef_render_handler_capi.h"
@@ -51,7 +51,9 @@ class CefRenderHandlerCToCpp
       DragOperation operation) override;
   void OnScrollOffsetChanged(CefRefPtr<CefBrowser> browser, double x,
       double y) override;
+  void OnImeCompositionRangeChanged(CefRefPtr<CefBrowser> browser,
+      const CefRange& selected_range,
+      const RectList& character_bounds) override;
 };
 
-#endif  // BUILDING_CEF_SHARED
 #endif  // CEF_LIBCEF_DLL_CTOCPP_RENDER_HANDLER_CTOCPP_H_

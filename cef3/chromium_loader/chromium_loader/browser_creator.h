@@ -7,7 +7,7 @@
 #pragma once
 
 #include "include/cef_base.h"
-#include "cefclient/browser/client_handler.h"
+#include "tests/cefclient/browser/client_handler.h"
 
 CefRefPtr<client::ClientHandler> NewBrowser(CefWindowHandle handle,
                                             CefString url);
