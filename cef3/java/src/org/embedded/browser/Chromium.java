@@ -295,8 +295,10 @@ public class Chromium extends Canvas {
 		OS_Mac = os.equals("Mac OS X");
 		OS_Linux = os.equals("Linux");
 		
-		if (OS_Windows)
+		if (OS_Windows) {
+			System.loadLibrary("chrome_elf");
 			System.loadLibrary("libcef");
+		}
 		System.loadLibrary("chromium_loader");
 	}
 	

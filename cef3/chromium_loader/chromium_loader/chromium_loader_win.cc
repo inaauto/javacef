@@ -46,6 +46,9 @@ void GetBrowserWindowInfo(CefWindowInfo& info, CefWindowHandle handle) {
 JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1init
   (JNIEnv *env, jobject jobj, jlong hwnd, jstring url, jobject chromiumset)
 {
+  // Enable High-DPI support on Windows 7 or newer.
+  CefEnableHighDPISupport();
+
   CefMainArgs main_args(GetModuleHandle(NULL));
   CefRefPtr<client::ClientApp> app(new client::ClientAppBrowser);
 
