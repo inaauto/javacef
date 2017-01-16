@@ -15,6 +15,8 @@ set(CEFCLIENT_BROWSER_BROWSER_SRCS
   browser/bytes_write_handler.cc
   browser/bytes_write_handler.h
   browser/client_app_delegates_browser.cc
+  browser/client_browser.cc
+  browser/client_browser.h
   browser/client_handler.cc
   browser/client_handler.h
   browser/client_handler_osr.cc
