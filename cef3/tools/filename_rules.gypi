@@ -78,9 +78,9 @@
         ['exclude', '(^|/)gtk_[^/]*\\.(h|cc)$'],
       ],
     }],
-    ['<(toolkit_views)==0 or >(nacl_untrusted_build)==1', {
-      'sources/': [ ['exclude', '_views\\.(h|cc)$'] ]
-    }],
+    #['<(toolkit_views)==0 or >(nacl_untrusted_build)==1', {
+    #  'sources/': [ ['exclude', '_views\\.(h|cc)$'] ]
+    #}],
     ['<(use_aura)==0 or >(nacl_untrusted_build)==1', {
       'sources/': [ ['exclude', '_aura(_browsertest|_unittest)?\\.(h|cc)$'],
                     ['exclude', '(^|/)aura/'],
