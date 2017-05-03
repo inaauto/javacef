@@ -193,11 +193,11 @@ void get_browser_settings(JNIEnv* env, jobject jcset, ChromiumSettings& cset)
 bool get_setting_boolean(JNIEnv* env, jclass cls, jobject jcset, const char* field_name)
 {
   if (env == NULL || cls == NULL || jcset == NULL || field_name == NULL)
-    return FALSE;
+    return false;
 
   jfieldID fieldId = env->GetFieldID(cls, field_name, "Z");
   if (fieldId == NULL)
-    return FALSE;
+    return false;
 
   return (bool)env->GetBooleanField(jcset, fieldId);
 }
@@ -209,7 +209,7 @@ int get_setting_int(JNIEnv* env, jclass cls, jobject jcset, const char* field_na
 
   jfieldID fieldId = env->GetFieldID(cls, field_name, "I");
   if (fieldId == NULL)
-    return FALSE;
+    return false;
 
   return (int)env->GetIntField(jcset, fieldId);
 }
