@@ -205,7 +205,7 @@ bool get_setting_boolean(JNIEnv* env, jclass cls, jobject jcset, const char* fie
 int get_setting_int(JNIEnv* env, jclass cls, jobject jcset, const char* field_name)
 {
   if (env == NULL || cls == NULL || jcset == NULL || field_name == NULL)
-    return NULL;
+    return false;
 
   jfieldID fieldId = env->GetFieldID(cls, field_name, "I");
   if (fieldId == NULL)

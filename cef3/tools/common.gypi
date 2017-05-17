@@ -2936,6 +2936,7 @@
           '-pipe',
         ],
         'cflags_cc': [
+          '-std=gnu++11',
           '-fno-rtti',
           '-fno-threadsafe-statics',
           # Make inline functions have hidden visiblity by default.
