@@ -22,13 +22,13 @@
 #include "include/capi/views/cef_menu_button_delegate_capi.h"
 #include "include/views/cef_menu_button.h"
 #include "include/capi/views/cef_menu_button_capi.h"
-#include "libcef_dll/ctocpp/ctocpp.h"
+#include "libcef_dll/ctocpp/ctocpp_ref_counted.h"
 
 // Wrap a C structure with a C++ class.
 // This class may be instantiated and accessed DLL-side only.
 class CefMenuButtonDelegateCToCpp
-    : public CefCToCpp<CefMenuButtonDelegateCToCpp, CefMenuButtonDelegate,
-        cef_menu_button_delegate_t> {
+    : public CefCToCppRefCounted<CefMenuButtonDelegateCToCpp,
+        CefMenuButtonDelegate, cef_menu_button_delegate_t> {
  public:
   CefMenuButtonDelegateCToCpp();
 
@@ -38,6 +38,7 @@ class CefMenuButtonDelegateCToCpp
 
   // CefButtonDelegate methods.
   void OnButtonPressed(CefRefPtr<CefButton> button) override;
+  void OnButtonStateChanged(CefRefPtr<CefButton> button) override;
 
   // CefViewDelegate methods.
   CefSize GetPreferredSize(CefRefPtr<CefView> view) override;
@@ -48,6 +49,8 @@ class CefMenuButtonDelegateCToCpp
       CefRefPtr<CefView> parent) override;
   void OnChildViewChanged(CefRefPtr<CefView> view, bool added,
       CefRefPtr<CefView> child) override;
+  void OnFocus(CefRefPtr<CefView> view) override;
+  void OnBlur(CefRefPtr<CefView> view) override;
 };
 
 #endif  // CEF_LIBCEF_DLL_CTOCPP_VIEWS_MENU_BUTTON_DELEGATE_CTOCPP_H_

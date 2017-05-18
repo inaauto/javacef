@@ -30,6 +30,7 @@ class ClientHandler : public CefClient,
                       public CefDisplayHandler,
                       public CefDownloadHandler,
                       public CefDragHandler,
+                      public CefFocusHandler,
                       public CefGeolocationHandler,
                       public CefKeyboardHandler,
                       public CefLifeSpanHandler,
@@ -37,7 +38,8 @@ class ClientHandler : public CefClient,
                       public CefRequestHandler {
  public:
   // Implement this interface to receive notification of ClientHandler
-  // events. The methods of this class will be called on the main thread.
+  // events. The methods of this class will be called on the main thread unless
+  // otherwise indicated.
   class Delegate {
    public:
     // Called when the browser is created.
@@ -70,6 +72,12 @@ class ClientHandler : public CefClient,
     virtual void OnSetDraggableRegions(
         const std::vector<CefDraggableRegion>& regions) = 0;
 
+    // Set focus to the next/previous control.
+    virtual void OnTakeFocus(bool next) {}
+
+    // Called on the UI thread before a context menu is displayed.
+    virtual void OnBeforeContextMenu(CefRefPtr<CefMenuModel> model) {}
+
    protected:
     virtual ~Delegate() {}
   };
@@ -97,6 +105,9 @@ class ClientHandler : public CefClient,
     return this;
   }
   CefRefPtr<CefDragHandler> GetDragHandler() OVERRIDE {
+    return this;
+  }
+  CefRefPtr<CefFocusHandler> GetFocusHandler() OVERRIDE {
     return this;
   }
   CefRefPtr<CefGeolocationHandler> GetGeolocationHandler() OVERRIDE {
@@ -168,10 +179,12 @@ class ClientHandler : public CefClient,
   bool OnDragEnter(CefRefPtr<CefBrowser> browser,
                    CefRefPtr<CefDragData> dragData,
                    CefDragHandler::DragOperationsMask mask) OVERRIDE;
-
   void OnDraggableRegionsChanged(
       CefRefPtr<CefBrowser> browser,
       const std::vector<CefDraggableRegion>& regions) OVERRIDE;
+
+  // CefFocusHandler methods
+  void OnTakeFocus(CefRefPtr<CefBrowser> browser, bool next) OVERRIDE;
 
   // CefGeolocationHandler methods
   bool OnRequestGeolocationPermission(
@@ -332,6 +345,7 @@ class ClientHandler : public CefClient,
                           bool canGoForward);
   void NotifyDraggableRegions(
       const std::vector<CefDraggableRegion>& regions);
+  void NotifyTakeFocus(bool next);
 
   // Test context menu creation.
   void BuildTestMenu(CefRefPtr<CefMenuModel> model);

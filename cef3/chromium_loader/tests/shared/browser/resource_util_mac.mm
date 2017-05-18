@@ -15,51 +15,38 @@ namespace client {
 
 namespace {
 
+// Implementation adapted from Chromium's base/mac/foundation_util.mm
+bool UncachedAmIBundled() {
+  return [[[NSBundle mainBundle] bundlePath] hasSuffix:@".app"];
+}
+
 bool AmIBundled() {
-  // Implementation adapted from Chromium's base/mac/foundation_util.mm
-  ProcessSerialNumber psn = {0, kCurrentProcess};
-
-  FSRef fsref;
-  OSStatus pbErr;
-  if ((pbErr = GetProcessBundleLocation(&psn, &fsref)) != noErr) {
-    NOTREACHED();
-    return false;
-  }
-
-  FSCatalogInfo info;
-  OSErr fsErr;
-  if ((fsErr = FSGetCatalogInfo(&fsref, kFSCatInfoNodeFlags, &info,
-                                NULL, NULL, NULL)) != noErr) {
-    NOTREACHED();
-    return false;
-  }
-
-  return (info.nodeFlags & kFSNodeIsDirectoryMask);
+  static bool am_i_bundled = UncachedAmIBundled();
+  return am_i_bundled;
 }
 
 }  // namespace
 
+// Implementation adapted from Chromium's base/base_path_mac.mm
 bool GetResourceDir(std::string& dir) {
-  // Implementation adapted from Chromium's base/base_path_mac.mm
-  if (AmIBundled()) {
-    // Retrieve the executable directory.
-    uint32_t pathSize = 0;
-    _NSGetExecutablePath(NULL, &pathSize);
-    if (pathSize > 0) {
-      dir.resize(pathSize);
-      _NSGetExecutablePath(const_cast<char*>(dir.c_str()), &pathSize);
-    }
+  // Retrieve the executable directory.
+  uint32_t pathSize = 0;
+  _NSGetExecutablePath(NULL, &pathSize);
+  if (pathSize > 0) {
+    dir.resize(pathSize);
+    _NSGetExecutablePath(const_cast<char*>(dir.c_str()), &pathSize);
+  }
 
-    // Trim executable name up to the last separator
+  if (AmIBundled()) {
+    // Trim executable name up to the last separator.
     std::string::size_type last_separator = dir.find_last_of("/");
     dir.resize(last_separator);
     dir.append("/../Resources");
     return true;
-  } else {
-    // TODO: Provide unbundled path
-    NOTIMPLEMENTED();
-    return false;
   }
+
+  dir.append("/Resources");
+  return true;
 }
 
 }  // namespace client

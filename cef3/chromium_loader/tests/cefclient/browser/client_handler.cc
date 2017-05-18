@@ -327,6 +327,9 @@ void ClientHandler::OnBeforeContextMenu(
     // Test context menu features.
     //BuildTestMenu(model);
   }
+
+  if (delegate_)
+    delegate_->OnBeforeContextMenu(model);
 }
 
 bool ClientHandler::OnContextMenuCommand(
@@ -465,6 +468,12 @@ void ClientHandler::OnDraggableRegionsChanged(
   CEF_REQUIRE_UI_THREAD();
 
   NotifyDraggableRegions(regions);
+}
+
+void ClientHandler::OnTakeFocus(CefRefPtr<CefBrowser> browser, bool next) {
+  CEF_REQUIRE_UI_THREAD();
+
+  NotifyTakeFocus(next);
 }
 
 bool ClientHandler::OnRequestGeolocationPermission(
@@ -1057,6 +1066,18 @@ void ClientHandler::NotifyDraggableRegions(
 
   if (delegate_)
     delegate_->OnSetDraggableRegions(regions);
+}
+
+void ClientHandler::NotifyTakeFocus(bool next) {
+  if (!CURRENTLY_ON_MAIN_THREAD()) {
+    // Execute this method on the main thread.
+    MAIN_POST_CLOSURE(
+        base::Bind(&ClientHandler::NotifyTakeFocus, this, next));
+    return;
+  }
+
+  if (delegate_)
+    delegate_->OnTakeFocus(next);
 }
 
 void ClientHandler::BuildTestMenu(CefRefPtr<CefMenuModel> model) {

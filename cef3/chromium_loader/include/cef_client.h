@@ -65,7 +65,7 @@
 // Implement this interface to provide handler implementations.
 ///
 /*--cef(source=client,no_debugct_check)--*/
-class CefClient : public virtual CefBase {
+class CefClient : public virtual CefBaseRefCounted {
  public:
   ///
   // Return the handler for context menus. If no handler is provided the default

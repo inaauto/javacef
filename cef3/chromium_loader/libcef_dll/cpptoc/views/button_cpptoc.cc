@@ -69,6 +69,19 @@ cef_button_state_t CEF_CALLBACK button_get_state(struct _cef_button_t* self) {
   return _retval;
 }
 
+void CEF_CALLBACK button_set_ink_drop_enabled(struct _cef_button_t* self,
+    int enabled) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+
+  // Execute
+  CefButtonCppToC::Get(self)->SetInkDropEnabled(
+      enabled?true:false);
+}
+
 void CEF_CALLBACK button_set_tooltip_text(struct _cef_button_t* self,
     const cef_string_t* tooltip_text) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
@@ -320,6 +333,33 @@ void CEF_CALLBACK button_set_id(struct _cef_view_t* self, int id) {
   // Execute
   CefButtonCppToC::Get(reinterpret_cast<cef_button_t*>(self))->SetID(
       id);
+}
+
+int CEF_CALLBACK button_get_group_id(struct _cef_view_t* self) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+
+  // Execute
+  int _retval = CefButtonCppToC::Get(reinterpret_cast<cef_button_t*>(
+      self))->GetGroupID();
+
+  // Return type: simple
+  return _retval;
+}
+
+void CEF_CALLBACK button_set_group_id(struct _cef_view_t* self, int group_id) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+
+  // Execute
+  CefButtonCppToC::Get(reinterpret_cast<cef_button_t*>(self))->SetGroupID(
+      group_id);
 }
 
 struct _cef_view_t* CEF_CALLBACK button_get_parent_view(
@@ -900,6 +940,7 @@ CefButtonCppToC::CefButtonCppToC() {
   GetStruct()->as_label_button = button_as_label_button;
   GetStruct()->set_state = button_set_state;
   GetStruct()->get_state = button_get_state;
+  GetStruct()->set_ink_drop_enabled = button_set_ink_drop_enabled;
   GetStruct()->set_tooltip_text = button_set_tooltip_text;
   GetStruct()->set_accessible_name = button_set_accessible_name;
   GetStruct()->base.as_browser_view = button_as_browser_view;
@@ -916,6 +957,8 @@ CefButtonCppToC::CefButtonCppToC() {
   GetStruct()->base.get_window = button_get_window;
   GetStruct()->base.get_id = button_get_id;
   GetStruct()->base.set_id = button_set_id;
+  GetStruct()->base.get_group_id = button_get_group_id;
+  GetStruct()->base.set_group_id = button_set_group_id;
   GetStruct()->base.get_parent_view = button_get_parent_view;
   GetStruct()->base.get_view_for_id = button_get_view_for_id;
   GetStruct()->base.set_bounds = button_set_bounds;
@@ -953,7 +996,7 @@ CefButtonCppToC::CefButtonCppToC() {
   GetStruct()->base.convert_point_from_view = button_convert_point_from_view;
 }
 
-template<> CefRefPtr<CefButton> CefCppToC<CefButtonCppToC, CefButton,
+template<> CefRefPtr<CefButton> CefCppToCRefCounted<CefButtonCppToC, CefButton,
     cef_button_t>::UnwrapDerived(CefWrapperType type, cef_button_t* s) {
   if (type == WT_LABEL_BUTTON) {
     return CefLabelButtonCppToC::Unwrap(reinterpret_cast<cef_label_button_t*>(
@@ -967,9 +1010,9 @@ template<> CefRefPtr<CefButton> CefCppToC<CefButtonCppToC, CefButton,
 }
 
 #if DCHECK_IS_ON()
-template<> base::AtomicRefCount CefCppToC<CefButtonCppToC, CefButton,
+template<> base::AtomicRefCount CefCppToCRefCounted<CefButtonCppToC, CefButton,
     cef_button_t>::DebugObjCt = 0;
 #endif
 
-template<> CefWrapperType CefCppToC<CefButtonCppToC, CefButton,
+template<> CefWrapperType CefCppToCRefCounted<CefButtonCppToC, CefButton,
     cef_button_t>::kWrapperType = WT_BUTTON;

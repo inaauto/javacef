@@ -150,6 +150,10 @@ set(CEFCLIENT_LINUX_BROWSER_SRCS
   browser/root_window_views.h
   browser/temp_window_x11.cc
   browser/temp_window_x11.h
+  browser/views_menu_bar.cc
+  browser/views_menu_bar.h
+  browser/views_style.cc
+  browser/views_style.h
   browser/views_window.cc
   browser/views_window.h
   browser/window_test_runner_gtk.cc
@@ -244,6 +248,10 @@ set(CEFCLIENT_WINDOWS_BROWSER_SRCS
   browser/root_window_win.h
   browser/temp_window_win.cc
   browser/temp_window_win.h
+  browser/views_menu_bar.cc
+  browser/views_menu_bar.h
+  browser/views_style.cc
+  browser/views_style.h
   browser/views_window.cc
   browser/views_window.h
   browser/window_test_runner_views.cc

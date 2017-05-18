@@ -22,19 +22,25 @@
 #include "include/capi/cef_menu_model_delegate_capi.h"
 #include "include/cef_menu_model.h"
 #include "include/capi/cef_menu_model_capi.h"
-#include "libcef_dll/ctocpp/ctocpp.h"
+#include "libcef_dll/ctocpp/ctocpp_ref_counted.h"
 
 // Wrap a C structure with a C++ class.
 // This class may be instantiated and accessed DLL-side only.
 class CefMenuModelDelegateCToCpp
-    : public CefCToCpp<CefMenuModelDelegateCToCpp, CefMenuModelDelegate,
-        cef_menu_model_delegate_t> {
+    : public CefCToCppRefCounted<CefMenuModelDelegateCToCpp,
+        CefMenuModelDelegate, cef_menu_model_delegate_t> {
  public:
   CefMenuModelDelegateCToCpp();
 
   // CefMenuModelDelegate methods.
   void ExecuteCommand(CefRefPtr<CefMenuModel> menu_model, int command_id,
       cef_event_flags_t event_flags) override;
+  void MouseOutsideMenu(CefRefPtr<CefMenuModel> menu_model,
+      const CefPoint& screen_point) override;
+  void UnhandledOpenSubmenu(CefRefPtr<CefMenuModel> menu_model,
+      bool is_rtl) override;
+  void UnhandledCloseSubmenu(CefRefPtr<CefMenuModel> menu_model,
+      bool is_rtl) override;
   void MenuWillShow(CefRefPtr<CefMenuModel> menu_model) override;
   void MenuClosed(CefRefPtr<CefMenuModel> menu_model) override;
   bool FormatLabel(CefRefPtr<CefMenuModel> menu_model,

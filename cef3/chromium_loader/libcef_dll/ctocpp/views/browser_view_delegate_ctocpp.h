@@ -24,13 +24,13 @@
 #include "include/capi/cef_browser_capi.h"
 #include "include/views/cef_browser_view.h"
 #include "include/capi/views/cef_browser_view_capi.h"
-#include "libcef_dll/ctocpp/ctocpp.h"
+#include "libcef_dll/ctocpp/ctocpp_ref_counted.h"
 
 // Wrap a C structure with a C++ class.
 // This class may be instantiated and accessed DLL-side only.
 class CefBrowserViewDelegateCToCpp
-    : public CefCToCpp<CefBrowserViewDelegateCToCpp, CefBrowserViewDelegate,
-        cef_browser_view_delegate_t> {
+    : public CefCToCppRefCounted<CefBrowserViewDelegateCToCpp,
+        CefBrowserViewDelegate, cef_browser_view_delegate_t> {
  public:
   CefBrowserViewDelegateCToCpp();
 
@@ -56,6 +56,8 @@ class CefBrowserViewDelegateCToCpp
       CefRefPtr<CefView> parent) override;
   void OnChildViewChanged(CefRefPtr<CefView> view, bool added,
       CefRefPtr<CefView> child) override;
+  void OnFocus(CefRefPtr<CefView> view) override;
+  void OnBlur(CefRefPtr<CefView> view) override;
 };
 
 #endif  // CEF_LIBCEF_DLL_CTOCPP_VIEWS_BROWSER_VIEW_DELEGATE_CTOCPP_H_

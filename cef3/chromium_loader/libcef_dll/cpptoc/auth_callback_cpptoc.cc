@@ -28,10 +28,7 @@ void CEF_CALLBACK auth_callback_cont(struct _cef_auth_callback_t* self,
   DCHECK(username);
   if (!username)
     return;
-  // Verify param: password; type: string_byref_const
-  DCHECK(password);
-  if (!password)
-    return;
+  // Unverified params: password
 
   // Execute
   CefAuthCallbackCppToC::Get(self)->Continue(
@@ -60,7 +57,7 @@ CefAuthCallbackCppToC::CefAuthCallbackCppToC() {
   GetStruct()->cancel = auth_callback_cancel;
 }
 
-template<> CefRefPtr<CefAuthCallback> CefCppToC<CefAuthCallbackCppToC,
+template<> CefRefPtr<CefAuthCallback> CefCppToCRefCounted<CefAuthCallbackCppToC,
     CefAuthCallback, cef_auth_callback_t>::UnwrapDerived(CefWrapperType type,
     cef_auth_callback_t* s) {
   NOTREACHED() << "Unexpected class type: " << type;
@@ -68,9 +65,9 @@ template<> CefRefPtr<CefAuthCallback> CefCppToC<CefAuthCallbackCppToC,
 }
 
 #if DCHECK_IS_ON()
-template<> base::AtomicRefCount CefCppToC<CefAuthCallbackCppToC,
+template<> base::AtomicRefCount CefCppToCRefCounted<CefAuthCallbackCppToC,
     CefAuthCallback, cef_auth_callback_t>::DebugObjCt = 0;
 #endif
 
-template<> CefWrapperType CefCppToC<CefAuthCallbackCppToC, CefAuthCallback,
-    cef_auth_callback_t>::kWrapperType = WT_AUTH_CALLBACK;
+template<> CefWrapperType CefCppToCRefCounted<CefAuthCallbackCppToC,
+    CefAuthCallback, cef_auth_callback_t>::kWrapperType = WT_AUTH_CALLBACK;

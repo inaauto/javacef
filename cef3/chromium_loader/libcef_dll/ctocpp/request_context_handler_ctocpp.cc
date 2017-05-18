@@ -32,7 +32,7 @@ CefRefPtr<CefCookieManager> CefRequestContextHandlerCToCpp::GetCookieManager() {
 }
 
 bool CefRequestContextHandlerCToCpp::OnBeforePluginLoad(
-    const CefString& mime_type, const CefString& plugin_url,
+    const CefString& mime_type, const CefString& plugin_url, bool is_main_frame,
     const CefString& top_origin_url, CefRefPtr<CefWebPluginInfo> plugin_info,
     PluginPolicy* plugin_policy) {
   cef_request_context_handler_t* _struct = GetStruct();
@@ -59,6 +59,7 @@ bool CefRequestContextHandlerCToCpp::OnBeforePluginLoad(
   int _retval = _struct->on_before_plugin_load(_struct,
       mime_type.GetStruct(),
       plugin_url.GetStruct(),
+      is_main_frame,
       top_origin_url.GetStruct(),
       CefWebPluginInfoCppToC::Wrap(plugin_info),
       plugin_policy);
@@ -73,7 +74,7 @@ bool CefRequestContextHandlerCToCpp::OnBeforePluginLoad(
 CefRequestContextHandlerCToCpp::CefRequestContextHandlerCToCpp() {
 }
 
-template<> cef_request_context_handler_t* CefCToCpp<CefRequestContextHandlerCToCpp,
+template<> cef_request_context_handler_t* CefCToCppRefCounted<CefRequestContextHandlerCToCpp,
     CefRequestContextHandler, cef_request_context_handler_t>::UnwrapDerived(
     CefWrapperType type, CefRequestContextHandler* c) {
   NOTREACHED() << "Unexpected class type: " << type;
@@ -81,10 +82,10 @@ template<> cef_request_context_handler_t* CefCToCpp<CefRequestContextHandlerCToC
 }
 
 #if DCHECK_IS_ON()
-template<> base::AtomicRefCount CefCToCpp<CefRequestContextHandlerCToCpp,
+template<> base::AtomicRefCount CefCToCppRefCounted<CefRequestContextHandlerCToCpp,
     CefRequestContextHandler, cef_request_context_handler_t>::DebugObjCt = 0;
 #endif
 
-template<> CefWrapperType CefCToCpp<CefRequestContextHandlerCToCpp,
+template<> CefWrapperType CefCToCppRefCounted<CefRequestContextHandlerCToCpp,
     CefRequestContextHandler, cef_request_context_handler_t>::kWrapperType =
     WT_REQUEST_CONTEXT_HANDLER;

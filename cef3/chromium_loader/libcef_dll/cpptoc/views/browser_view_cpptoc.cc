@@ -92,6 +92,19 @@ cef_browser_t* CEF_CALLBACK browser_view_get_browser(
   return CefBrowserCppToC::Wrap(_retval);
 }
 
+void CEF_CALLBACK browser_view_set_prefer_accelerators(
+    struct _cef_browser_view_t* self, int prefer_accelerators) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+
+  // Execute
+  CefBrowserViewCppToC::Get(self)->SetPreferAccelerators(
+      prefer_accelerators?true:false);
+}
+
 cef_browser_view_t* CEF_CALLBACK browser_view_as_browser_view(
     struct _cef_view_t* self) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
@@ -311,6 +324,35 @@ void CEF_CALLBACK browser_view_set_id(struct _cef_view_t* self, int id) {
   // Execute
   CefBrowserViewCppToC::Get(reinterpret_cast<cef_browser_view_t*>(self))->SetID(
       id);
+}
+
+int CEF_CALLBACK browser_view_get_group_id(struct _cef_view_t* self) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+
+  // Execute
+  int _retval = CefBrowserViewCppToC::Get(reinterpret_cast<cef_browser_view_t*>(
+      self))->GetGroupID();
+
+  // Return type: simple
+  return _retval;
+}
+
+void CEF_CALLBACK browser_view_set_group_id(struct _cef_view_t* self,
+    int group_id) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+
+  // Execute
+  CefBrowserViewCppToC::Get(reinterpret_cast<cef_browser_view_t*>(
+      self))->SetGroupID(
+      group_id);
 }
 
 struct _cef_view_t* CEF_CALLBACK browser_view_get_parent_view(
@@ -905,6 +947,7 @@ int CEF_CALLBACK browser_view_convert_point_from_view(struct _cef_view_t* self,
 
 CefBrowserViewCppToC::CefBrowserViewCppToC() {
   GetStruct()->get_browser = browser_view_get_browser;
+  GetStruct()->set_prefer_accelerators = browser_view_set_prefer_accelerators;
   GetStruct()->base.as_browser_view = browser_view_as_browser_view;
   GetStruct()->base.as_button = browser_view_as_button;
   GetStruct()->base.as_panel = browser_view_as_panel;
@@ -919,6 +962,8 @@ CefBrowserViewCppToC::CefBrowserViewCppToC() {
   GetStruct()->base.get_window = browser_view_get_window;
   GetStruct()->base.get_id = browser_view_get_id;
   GetStruct()->base.set_id = browser_view_set_id;
+  GetStruct()->base.get_group_id = browser_view_get_group_id;
+  GetStruct()->base.set_group_id = browser_view_set_group_id;
   GetStruct()->base.get_parent_view = browser_view_get_parent_view;
   GetStruct()->base.get_view_for_id = browser_view_get_view_for_id;
   GetStruct()->base.set_bounds = browser_view_set_bounds;
@@ -960,7 +1005,7 @@ CefBrowserViewCppToC::CefBrowserViewCppToC() {
       browser_view_convert_point_from_view;
 }
 
-template<> CefRefPtr<CefBrowserView> CefCppToC<CefBrowserViewCppToC,
+template<> CefRefPtr<CefBrowserView> CefCppToCRefCounted<CefBrowserViewCppToC,
     CefBrowserView, cef_browser_view_t>::UnwrapDerived(CefWrapperType type,
     cef_browser_view_t* s) {
   NOTREACHED() << "Unexpected class type: " << type;
@@ -968,9 +1013,9 @@ template<> CefRefPtr<CefBrowserView> CefCppToC<CefBrowserViewCppToC,
 }
 
 #if DCHECK_IS_ON()
-template<> base::AtomicRefCount CefCppToC<CefBrowserViewCppToC, CefBrowserView,
-    cef_browser_view_t>::DebugObjCt = 0;
+template<> base::AtomicRefCount CefCppToCRefCounted<CefBrowserViewCppToC,
+    CefBrowserView, cef_browser_view_t>::DebugObjCt = 0;
 #endif
 
-template<> CefWrapperType CefCppToC<CefBrowserViewCppToC, CefBrowserView,
-    cef_browser_view_t>::kWrapperType = WT_BROWSER_VIEW;
+template<> CefWrapperType CefCppToCRefCounted<CefBrowserViewCppToC,
+    CefBrowserView, cef_browser_view_t>::kWrapperType = WT_BROWSER_VIEW;

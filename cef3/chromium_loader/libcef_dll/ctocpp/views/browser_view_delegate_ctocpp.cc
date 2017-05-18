@@ -260,13 +260,49 @@ void CefBrowserViewDelegateCToCpp::OnChildViewChanged(CefRefPtr<CefView> view,
       CefViewCppToC::Wrap(child));
 }
 
+void CefBrowserViewDelegateCToCpp::OnFocus(CefRefPtr<CefView> view) {
+  cef_view_delegate_t* _struct = reinterpret_cast<cef_view_delegate_t*>(
+      GetStruct());
+  if (CEF_MEMBER_MISSING(_struct, on_focus))
+    return;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Verify param: view; type: refptr_diff
+  DCHECK(view.get());
+  if (!view.get())
+    return;
+
+  // Execute
+  _struct->on_focus(_struct,
+      CefViewCppToC::Wrap(view));
+}
+
+void CefBrowserViewDelegateCToCpp::OnBlur(CefRefPtr<CefView> view) {
+  cef_view_delegate_t* _struct = reinterpret_cast<cef_view_delegate_t*>(
+      GetStruct());
+  if (CEF_MEMBER_MISSING(_struct, on_blur))
+    return;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Verify param: view; type: refptr_diff
+  DCHECK(view.get());
+  if (!view.get())
+    return;
+
+  // Execute
+  _struct->on_blur(_struct,
+      CefViewCppToC::Wrap(view));
+}
+
 
 // CONSTRUCTOR - Do not edit by hand.
 
 CefBrowserViewDelegateCToCpp::CefBrowserViewDelegateCToCpp() {
 }
 
-template<> cef_browser_view_delegate_t* CefCToCpp<CefBrowserViewDelegateCToCpp,
+template<> cef_browser_view_delegate_t* CefCToCppRefCounted<CefBrowserViewDelegateCToCpp,
     CefBrowserViewDelegate, cef_browser_view_delegate_t>::UnwrapDerived(
     CefWrapperType type, CefBrowserViewDelegate* c) {
   NOTREACHED() << "Unexpected class type: " << type;
@@ -274,10 +310,10 @@ template<> cef_browser_view_delegate_t* CefCToCpp<CefBrowserViewDelegateCToCpp,
 }
 
 #if DCHECK_IS_ON()
-template<> base::AtomicRefCount CefCToCpp<CefBrowserViewDelegateCToCpp,
+template<> base::AtomicRefCount CefCToCppRefCounted<CefBrowserViewDelegateCToCpp,
     CefBrowserViewDelegate, cef_browser_view_delegate_t>::DebugObjCt = 0;
 #endif
 
-template<> CefWrapperType CefCToCpp<CefBrowserViewDelegateCToCpp,
+template<> CefWrapperType CefCToCppRefCounted<CefBrowserViewDelegateCToCpp,
     CefBrowserViewDelegate, cef_browser_view_delegate_t>::kWrapperType =
     WT_BROWSER_VIEW_DELEGATE;

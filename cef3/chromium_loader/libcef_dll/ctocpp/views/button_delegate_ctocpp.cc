@@ -35,6 +35,24 @@ void CefButtonDelegateCToCpp::OnButtonPressed(CefRefPtr<CefButton> button) {
       CefButtonCppToC::Wrap(button));
 }
 
+void CefButtonDelegateCToCpp::OnButtonStateChanged(
+    CefRefPtr<CefButton> button) {
+  cef_button_delegate_t* _struct = GetStruct();
+  if (CEF_MEMBER_MISSING(_struct, on_button_state_changed))
+    return;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Verify param: button; type: refptr_diff
+  DCHECK(button.get());
+  if (!button.get())
+    return;
+
+  // Execute
+  _struct->on_button_state_changed(_struct,
+      CefButtonCppToC::Wrap(button));
+}
+
 CefSize CefButtonDelegateCToCpp::GetPreferredSize(CefRefPtr<CefView> view) {
   cef_view_delegate_t* _struct = reinterpret_cast<cef_view_delegate_t*>(
       GetStruct());
@@ -171,13 +189,49 @@ void CefButtonDelegateCToCpp::OnChildViewChanged(CefRefPtr<CefView> view,
       CefViewCppToC::Wrap(child));
 }
 
+void CefButtonDelegateCToCpp::OnFocus(CefRefPtr<CefView> view) {
+  cef_view_delegate_t* _struct = reinterpret_cast<cef_view_delegate_t*>(
+      GetStruct());
+  if (CEF_MEMBER_MISSING(_struct, on_focus))
+    return;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Verify param: view; type: refptr_diff
+  DCHECK(view.get());
+  if (!view.get())
+    return;
+
+  // Execute
+  _struct->on_focus(_struct,
+      CefViewCppToC::Wrap(view));
+}
+
+void CefButtonDelegateCToCpp::OnBlur(CefRefPtr<CefView> view) {
+  cef_view_delegate_t* _struct = reinterpret_cast<cef_view_delegate_t*>(
+      GetStruct());
+  if (CEF_MEMBER_MISSING(_struct, on_blur))
+    return;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Verify param: view; type: refptr_diff
+  DCHECK(view.get());
+  if (!view.get())
+    return;
+
+  // Execute
+  _struct->on_blur(_struct,
+      CefViewCppToC::Wrap(view));
+}
+
 
 // CONSTRUCTOR - Do not edit by hand.
 
 CefButtonDelegateCToCpp::CefButtonDelegateCToCpp() {
 }
 
-template<> cef_button_delegate_t* CefCToCpp<CefButtonDelegateCToCpp,
+template<> cef_button_delegate_t* CefCToCppRefCounted<CefButtonDelegateCToCpp,
     CefButtonDelegate, cef_button_delegate_t>::UnwrapDerived(
     CefWrapperType type, CefButtonDelegate* c) {
   if (type == WT_MENU_BUTTON_DELEGATE) {
@@ -190,9 +244,10 @@ template<> cef_button_delegate_t* CefCToCpp<CefButtonDelegateCToCpp,
 }
 
 #if DCHECK_IS_ON()
-template<> base::AtomicRefCount CefCToCpp<CefButtonDelegateCToCpp,
+template<> base::AtomicRefCount CefCToCppRefCounted<CefButtonDelegateCToCpp,
     CefButtonDelegate, cef_button_delegate_t>::DebugObjCt = 0;
 #endif
 
-template<> CefWrapperType CefCToCpp<CefButtonDelegateCToCpp, CefButtonDelegate,
-    cef_button_delegate_t>::kWrapperType = WT_BUTTON_DELEGATE;
+template<> CefWrapperType CefCToCppRefCounted<CefButtonDelegateCToCpp,
+    CefButtonDelegate, cef_button_delegate_t>::kWrapperType =
+    WT_BUTTON_DELEGATE;

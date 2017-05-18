@@ -21,13 +21,13 @@
 #include <vector>
 #include "include/cef_context_menu_handler.h"
 #include "include/capi/cef_context_menu_handler_capi.h"
-#include "libcef_dll/ctocpp/ctocpp.h"
+#include "libcef_dll/ctocpp/ctocpp_ref_counted.h"
 
 // Wrap a C structure with a C++ class.
 // This class may be instantiated and accessed wrapper-side only.
 class CefContextMenuParamsCToCpp
-    : public CefCToCpp<CefContextMenuParamsCToCpp, CefContextMenuParams,
-        cef_context_menu_params_t> {
+    : public CefCToCppRefCounted<CefContextMenuParamsCToCpp,
+        CefContextMenuParams, cef_context_menu_params_t> {
  public:
   CefContextMenuParamsCToCpp();
 
@@ -39,6 +39,7 @@ class CefContextMenuParamsCToCpp
   CefString GetUnfilteredLinkUrl() OVERRIDE;
   CefString GetSourceUrl() OVERRIDE;
   bool HasImageContents() OVERRIDE;
+  CefString GetTitleText() OVERRIDE;
   CefString GetPageUrl() OVERRIDE;
   CefString GetFrameUrl() OVERRIDE;
   CefString GetFrameCharset() OVERRIDE;

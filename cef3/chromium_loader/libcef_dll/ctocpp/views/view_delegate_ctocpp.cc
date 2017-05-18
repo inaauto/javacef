@@ -152,13 +152,47 @@ void CefViewDelegateCToCpp::OnChildViewChanged(CefRefPtr<CefView> view,
       CefViewCppToC::Wrap(child));
 }
 
+void CefViewDelegateCToCpp::OnFocus(CefRefPtr<CefView> view) {
+  cef_view_delegate_t* _struct = GetStruct();
+  if (CEF_MEMBER_MISSING(_struct, on_focus))
+    return;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Verify param: view; type: refptr_diff
+  DCHECK(view.get());
+  if (!view.get())
+    return;
+
+  // Execute
+  _struct->on_focus(_struct,
+      CefViewCppToC::Wrap(view));
+}
+
+void CefViewDelegateCToCpp::OnBlur(CefRefPtr<CefView> view) {
+  cef_view_delegate_t* _struct = GetStruct();
+  if (CEF_MEMBER_MISSING(_struct, on_blur))
+    return;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Verify param: view; type: refptr_diff
+  DCHECK(view.get());
+  if (!view.get())
+    return;
+
+  // Execute
+  _struct->on_blur(_struct,
+      CefViewCppToC::Wrap(view));
+}
+
 
 // CONSTRUCTOR - Do not edit by hand.
 
 CefViewDelegateCToCpp::CefViewDelegateCToCpp() {
 }
 
-template<> cef_view_delegate_t* CefCToCpp<CefViewDelegateCToCpp,
+template<> cef_view_delegate_t* CefCToCppRefCounted<CefViewDelegateCToCpp,
     CefViewDelegate, cef_view_delegate_t>::UnwrapDerived(CefWrapperType type,
     CefViewDelegate* c) {
   if (type == WT_BROWSER_VIEW_DELEGATE) {
@@ -196,9 +230,9 @@ template<> cef_view_delegate_t* CefCToCpp<CefViewDelegateCToCpp,
 }
 
 #if DCHECK_IS_ON()
-template<> base::AtomicRefCount CefCToCpp<CefViewDelegateCToCpp,
+template<> base::AtomicRefCount CefCToCppRefCounted<CefViewDelegateCToCpp,
     CefViewDelegate, cef_view_delegate_t>::DebugObjCt = 0;
 #endif
 
-template<> CefWrapperType CefCToCpp<CefViewDelegateCToCpp, CefViewDelegate,
-    cef_view_delegate_t>::kWrapperType = WT_VIEW_DELEGATE;
+template<> CefWrapperType CefCToCppRefCounted<CefViewDelegateCToCpp,
+    CefViewDelegate, cef_view_delegate_t>::kWrapperType = WT_VIEW_DELEGATE;

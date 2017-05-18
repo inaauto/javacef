@@ -732,6 +732,34 @@ void CEF_CALLBACK textfield_set_id(struct _cef_view_t* self, int id) {
       id);
 }
 
+int CEF_CALLBACK textfield_get_group_id(struct _cef_view_t* self) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+
+  // Execute
+  int _retval = CefTextfieldCppToC::Get(reinterpret_cast<cef_textfield_t*>(
+      self))->GetGroupID();
+
+  // Return type: simple
+  return _retval;
+}
+
+void CEF_CALLBACK textfield_set_group_id(struct _cef_view_t* self,
+    int group_id) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+
+  // Execute
+  CefTextfieldCppToC::Get(reinterpret_cast<cef_textfield_t*>(self))->SetGroupID(
+      group_id);
+}
+
 struct _cef_view_t* CEF_CALLBACK textfield_get_parent_view(
     struct _cef_view_t* self) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
@@ -1361,6 +1389,8 @@ CefTextfieldCppToC::CefTextfieldCppToC() {
   GetStruct()->base.get_window = textfield_get_window;
   GetStruct()->base.get_id = textfield_get_id;
   GetStruct()->base.set_id = textfield_set_id;
+  GetStruct()->base.get_group_id = textfield_get_group_id;
+  GetStruct()->base.set_group_id = textfield_set_group_id;
   GetStruct()->base.get_parent_view = textfield_get_parent_view;
   GetStruct()->base.get_view_for_id = textfield_get_view_for_id;
   GetStruct()->base.set_bounds = textfield_set_bounds;
@@ -1398,16 +1428,17 @@ CefTextfieldCppToC::CefTextfieldCppToC() {
   GetStruct()->base.convert_point_from_view = textfield_convert_point_from_view;
 }
 
-template<> CefRefPtr<CefTextfield> CefCppToC<CefTextfieldCppToC, CefTextfield,
-    cef_textfield_t>::UnwrapDerived(CefWrapperType type, cef_textfield_t* s) {
+template<> CefRefPtr<CefTextfield> CefCppToCRefCounted<CefTextfieldCppToC,
+    CefTextfield, cef_textfield_t>::UnwrapDerived(CefWrapperType type,
+    cef_textfield_t* s) {
   NOTREACHED() << "Unexpected class type: " << type;
   return NULL;
 }
 
 #if DCHECK_IS_ON()
-template<> base::AtomicRefCount CefCppToC<CefTextfieldCppToC, CefTextfield,
-    cef_textfield_t>::DebugObjCt = 0;
+template<> base::AtomicRefCount CefCppToCRefCounted<CefTextfieldCppToC,
+    CefTextfield, cef_textfield_t>::DebugObjCt = 0;
 #endif
 
-template<> CefWrapperType CefCppToC<CefTextfieldCppToC, CefTextfield,
+template<> CefWrapperType CefCppToCRefCounted<CefTextfieldCppToC, CefTextfield,
     cef_textfield_t>::kWrapperType = WT_TEXTFIELD;

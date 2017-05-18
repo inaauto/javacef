@@ -81,6 +81,17 @@ void CEF_CALLBACK menu_button_show_menu(struct _cef_menu_button_t* self,
       anchor_position);
 }
 
+void CEF_CALLBACK menu_button_trigger_menu(struct _cef_menu_button_t* self) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+
+  // Execute
+  CefMenuButtonCppToC::Get(self)->TriggerMenu();
+}
+
 cef_menu_button_t* CEF_CALLBACK menu_button_as_menu_button(
     struct _cef_label_button_t* self) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
@@ -310,6 +321,20 @@ cef_button_state_t CEF_CALLBACK menu_button_get_state(
 
   // Return type: simple
   return _retval;
+}
+
+void CEF_CALLBACK menu_button_set_ink_drop_enabled(struct _cef_button_t* self,
+    int enabled) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+
+  // Execute
+  CefMenuButtonCppToC::Get(reinterpret_cast<cef_menu_button_t*>(
+      self))->SetInkDropEnabled(
+      enabled?true:false);
 }
 
 void CEF_CALLBACK menu_button_set_tooltip_text(struct _cef_button_t* self,
@@ -567,6 +592,35 @@ void CEF_CALLBACK menu_button_set_id(struct _cef_view_t* self, int id) {
   // Execute
   CefMenuButtonCppToC::Get(reinterpret_cast<cef_menu_button_t*>(self))->SetID(
       id);
+}
+
+int CEF_CALLBACK menu_button_get_group_id(struct _cef_view_t* self) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+
+  // Execute
+  int _retval = CefMenuButtonCppToC::Get(reinterpret_cast<cef_menu_button_t*>(
+      self))->GetGroupID();
+
+  // Return type: simple
+  return _retval;
+}
+
+void CEF_CALLBACK menu_button_set_group_id(struct _cef_view_t* self,
+    int group_id) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+
+  // Execute
+  CefMenuButtonCppToC::Get(reinterpret_cast<cef_menu_button_t*>(
+      self))->SetGroupID(
+      group_id);
 }
 
 struct _cef_view_t* CEF_CALLBACK menu_button_get_parent_view(
@@ -1157,6 +1211,7 @@ int CEF_CALLBACK menu_button_convert_point_from_view(struct _cef_view_t* self,
 
 CefMenuButtonCppToC::CefMenuButtonCppToC() {
   GetStruct()->show_menu = menu_button_show_menu;
+  GetStruct()->trigger_menu = menu_button_trigger_menu;
   GetStruct()->base.as_menu_button = menu_button_as_menu_button;
   GetStruct()->base.set_text = menu_button_set_text;
   GetStruct()->base.get_text = menu_button_get_text;
@@ -1173,6 +1228,8 @@ CefMenuButtonCppToC::CefMenuButtonCppToC() {
   GetStruct()->base.base.as_label_button = menu_button_as_label_button;
   GetStruct()->base.base.set_state = menu_button_set_state;
   GetStruct()->base.base.get_state = menu_button_get_state;
+  GetStruct()->base.base.set_ink_drop_enabled =
+      menu_button_set_ink_drop_enabled;
   GetStruct()->base.base.set_tooltip_text = menu_button_set_tooltip_text;
   GetStruct()->base.base.set_accessible_name = menu_button_set_accessible_name;
   GetStruct()->base.base.base.as_browser_view = menu_button_as_browser_view;
@@ -1189,6 +1246,8 @@ CefMenuButtonCppToC::CefMenuButtonCppToC() {
   GetStruct()->base.base.base.get_window = menu_button_get_window;
   GetStruct()->base.base.base.get_id = menu_button_get_id;
   GetStruct()->base.base.base.set_id = menu_button_set_id;
+  GetStruct()->base.base.base.get_group_id = menu_button_get_group_id;
+  GetStruct()->base.base.base.set_group_id = menu_button_set_group_id;
   GetStruct()->base.base.base.get_parent_view = menu_button_get_parent_view;
   GetStruct()->base.base.base.get_view_for_id = menu_button_get_view_for_id;
   GetStruct()->base.base.base.set_bounds = menu_button_set_bounds;
@@ -1236,7 +1295,7 @@ CefMenuButtonCppToC::CefMenuButtonCppToC() {
       menu_button_convert_point_from_view;
 }
 
-template<> CefRefPtr<CefMenuButton> CefCppToC<CefMenuButtonCppToC,
+template<> CefRefPtr<CefMenuButton> CefCppToCRefCounted<CefMenuButtonCppToC,
     CefMenuButton, cef_menu_button_t>::UnwrapDerived(CefWrapperType type,
     cef_menu_button_t* s) {
   NOTREACHED() << "Unexpected class type: " << type;
@@ -1244,9 +1303,9 @@ template<> CefRefPtr<CefMenuButton> CefCppToC<CefMenuButtonCppToC,
 }
 
 #if DCHECK_IS_ON()
-template<> base::AtomicRefCount CefCppToC<CefMenuButtonCppToC, CefMenuButton,
-    cef_menu_button_t>::DebugObjCt = 0;
+template<> base::AtomicRefCount CefCppToCRefCounted<CefMenuButtonCppToC,
+    CefMenuButton, cef_menu_button_t>::DebugObjCt = 0;
 #endif
 
-template<> CefWrapperType CefCppToC<CefMenuButtonCppToC, CefMenuButton,
-    cef_menu_button_t>::kWrapperType = WT_MENU_BUTTON;
+template<> CefWrapperType CefCppToCRefCounted<CefMenuButtonCppToC,
+    CefMenuButton, cef_menu_button_t>::kWrapperType = WT_MENU_BUTTON;

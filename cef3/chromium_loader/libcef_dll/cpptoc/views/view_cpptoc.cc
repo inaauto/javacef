@@ -231,6 +231,32 @@ void CEF_CALLBACK view_set_id(struct _cef_view_t* self, int id) {
       id);
 }
 
+int CEF_CALLBACK view_get_group_id(struct _cef_view_t* self) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+
+  // Execute
+  int _retval = CefViewCppToC::Get(self)->GetGroupID();
+
+  // Return type: simple
+  return _retval;
+}
+
+void CEF_CALLBACK view_set_group_id(struct _cef_view_t* self, int group_id) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+
+  // Execute
+  CefViewCppToC::Get(self)->SetGroupID(
+      group_id);
+}
+
 struct _cef_view_t* CEF_CALLBACK view_get_parent_view(
     struct _cef_view_t* self) {
   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
@@ -794,6 +820,8 @@ CefViewCppToC::CefViewCppToC() {
   GetStruct()->get_window = view_get_window;
   GetStruct()->get_id = view_get_id;
   GetStruct()->set_id = view_set_id;
+  GetStruct()->get_group_id = view_get_group_id;
+  GetStruct()->set_group_id = view_set_group_id;
   GetStruct()->get_parent_view = view_get_parent_view;
   GetStruct()->get_view_for_id = view_get_view_for_id;
   GetStruct()->set_bounds = view_set_bounds;
@@ -828,7 +856,7 @@ CefViewCppToC::CefViewCppToC() {
   GetStruct()->convert_point_from_view = view_convert_point_from_view;
 }
 
-template<> CefRefPtr<CefView> CefCppToC<CefViewCppToC, CefView,
+template<> CefRefPtr<CefView> CefCppToCRefCounted<CefViewCppToC, CefView,
     cef_view_t>::UnwrapDerived(CefWrapperType type, cef_view_t* s) {
   if (type == WT_BROWSER_VIEW) {
     return CefBrowserViewCppToC::Unwrap(reinterpret_cast<cef_browser_view_t*>(
@@ -861,9 +889,9 @@ template<> CefRefPtr<CefView> CefCppToC<CefViewCppToC, CefView,
 }
 
 #if DCHECK_IS_ON()
-template<> base::AtomicRefCount CefCppToC<CefViewCppToC, CefView,
+template<> base::AtomicRefCount CefCppToCRefCounted<CefViewCppToC, CefView,
     cef_view_t>::DebugObjCt = 0;
 #endif
 
-template<> CefWrapperType CefCppToC<CefViewCppToC, CefView,
+template<> CefWrapperType CefCppToCRefCounted<CefViewCppToC, CefView,
     cef_view_t>::kWrapperType = WT_VIEW;

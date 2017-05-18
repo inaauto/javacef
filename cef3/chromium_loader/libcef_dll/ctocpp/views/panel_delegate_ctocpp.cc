@@ -153,13 +153,49 @@ void CefPanelDelegateCToCpp::OnChildViewChanged(CefRefPtr<CefView> view,
       CefViewCppToC::Wrap(child));
 }
 
+void CefPanelDelegateCToCpp::OnFocus(CefRefPtr<CefView> view) {
+  cef_view_delegate_t* _struct = reinterpret_cast<cef_view_delegate_t*>(
+      GetStruct());
+  if (CEF_MEMBER_MISSING(_struct, on_focus))
+    return;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Verify param: view; type: refptr_diff
+  DCHECK(view.get());
+  if (!view.get())
+    return;
+
+  // Execute
+  _struct->on_focus(_struct,
+      CefViewCppToC::Wrap(view));
+}
+
+void CefPanelDelegateCToCpp::OnBlur(CefRefPtr<CefView> view) {
+  cef_view_delegate_t* _struct = reinterpret_cast<cef_view_delegate_t*>(
+      GetStruct());
+  if (CEF_MEMBER_MISSING(_struct, on_blur))
+    return;
+
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  // Verify param: view; type: refptr_diff
+  DCHECK(view.get());
+  if (!view.get())
+    return;
+
+  // Execute
+  _struct->on_blur(_struct,
+      CefViewCppToC::Wrap(view));
+}
+
 
 // CONSTRUCTOR - Do not edit by hand.
 
 CefPanelDelegateCToCpp::CefPanelDelegateCToCpp() {
 }
 
-template<> cef_panel_delegate_t* CefCToCpp<CefPanelDelegateCToCpp,
+template<> cef_panel_delegate_t* CefCToCppRefCounted<CefPanelDelegateCToCpp,
     CefPanelDelegate, cef_panel_delegate_t>::UnwrapDerived(CefWrapperType type,
     CefPanelDelegate* c) {
   if (type == WT_WINDOW_DELEGATE) {
@@ -172,9 +208,9 @@ template<> cef_panel_delegate_t* CefCToCpp<CefPanelDelegateCToCpp,
 }
 
 #if DCHECK_IS_ON()
-template<> base::AtomicRefCount CefCToCpp<CefPanelDelegateCToCpp,
+template<> base::AtomicRefCount CefCToCppRefCounted<CefPanelDelegateCToCpp,
     CefPanelDelegate, cef_panel_delegate_t>::DebugObjCt = 0;
 #endif
 
-template<> CefWrapperType CefCToCpp<CefPanelDelegateCToCpp, CefPanelDelegate,
-    cef_panel_delegate_t>::kWrapperType = WT_PANEL_DELEGATE;
+template<> CefWrapperType CefCToCppRefCounted<CefPanelDelegateCToCpp,
+    CefPanelDelegate, cef_panel_delegate_t>::kWrapperType = WT_PANEL_DELEGATE;
