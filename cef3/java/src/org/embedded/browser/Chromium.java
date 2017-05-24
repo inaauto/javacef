@@ -210,7 +210,8 @@ public class Chromium extends Canvas {
 	}
 	
 	static void title_change(String title, int id) {
-		chmap.get(id).loaded = true;
+		if (chmap.containsKey(id))
+			chmap.get(id).loaded = true;
 		if (title.equals(""))
 			return;
 		if (chmap.containsKey(id))
@@ -298,6 +299,9 @@ public class Chromium extends Canvas {
 		if (OS_Windows) {
 			System.loadLibrary("chrome_elf");
 			System.loadLibrary("libcef");
+		}
+		else if (OS_Linux) {
+			System.loadLibrary("cef");
 		}
 		System.loadLibrary("chromium_loader");
 	}
