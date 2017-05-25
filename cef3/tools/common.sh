@@ -126,7 +126,8 @@ checkCefPrebuiltLinux() {
     tar xvf $APP_PATH/$CEF_FILENAME$CEF_EXTENSION -C $APP_PATH/cef --strip-components=2
 
     pushd "$PROJECT_DIR/cef_runtime/$PLATFORM"
-    zip -r "$PROJECT_DIR/out/Release/$CEF_FILENAME.zip" ./cef
+    mkdir -p $PROJECT_DIR/out/Release/dist
+    zip -r "$PROJECT_DIR/out/Release/dist/$CEF_FILENAME.zip" ./cef
     popd
 
     if [ ! -e "$APP_PATH/cef/libcef.so" ]; then
