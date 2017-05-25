@@ -276,7 +276,7 @@
       'image_loader_extension%': 0,
 
       # Python version.
-      'python_ver%': '2.6',
+      'python_ver%': '2.7',
 
       # Set NEON compilation flags.
       'arm_neon%': 1,

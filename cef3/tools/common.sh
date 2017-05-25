@@ -112,10 +112,27 @@ checkJavaLinux() {
 
 checkCefPrebuiltLinux() {
   APP_PATH="$PROJECT_DIR/cef_runtime/$PLATFORM"
-  if [ ! -e "$APP_PATH/cefclient" ]; then
-    echo "Warning: The prebuilt CEF release binaries are not found at $APP_PATH." \
-         "Libraries may not be found at link time. Did you download the correct" \
-         "CEF release and unzip it there?"
+  if [ ! -e "$APP_PATH/cef/libcef.so" ]; then
+    CEF_VERSION=`cat $PROJECT_DIR/cef_runtime_version.txt`
+    CEF_FILENAME="cef_binary_${CEF_VERSION}_${PLATFORM}_client"
+    CEF_EXTENSION=".tar.bz2"
+
+    if [ ! -e "$APP_PATH/$CEF_FILENAME$CEF_EXTENSION" ]; then
+      CEF_DONWLOAD_URL="http://opensource.spotify.com/cefbuilds/$CEF_FILENAME$CEF_EXTENSION"
+      wget -P $APP_PATH $CEF_DONWLOAD_URL
+    fi
+    
+    mkdir -p $APP_PATH/cef
+    tar xvf $APP_PATH/$CEF_FILENAME$CEF_EXTENSION -C $APP_PATH/cef --strip-components=2
+
+    pushd "$PROJECT_DIR/cef_runtime/$PLATFORM"
+    zip -r "$PROJECT_DIR/out/Release/$CEF_FILENAME.zip" ./cef
+    popd
+
+    if [ ! -e "$APP_PATH/cef/libcef.so" ]; then
+      echo "Warning: The prebuilt CEF release binaries are not found at $APP_PATH." \
+           "Libraries may not be found at link time. Did you download the correct" \
+           "CEF release and unzip it there?"
+    fi
   fi
 }
-

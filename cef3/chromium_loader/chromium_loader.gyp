@@ -147,7 +147,7 @@
               '-Wl,-rpath,.',
             ],
             'libraries': [
-              "<(cef_prebuilt_path)/lib/libcef.so",
+              "<(cef_prebuilt_path)/cef/libcef.so",
             ],
           },
           'sources': [

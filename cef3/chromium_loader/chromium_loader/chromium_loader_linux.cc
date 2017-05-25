@@ -9,9 +9,10 @@
 #include "include/cef_app.h"
 #include "include/cef_browser.h"
 #include "include/cef_frame.h"
-#include "cefclient/browser/client_app_browser.h"
-#include "cefclient/browser/client_handler.h"
-#include "cefclient/browser/cookie_handler.h"
+#include "tests/shared/browser/client_app_browser.h"
+#include "tests/cefclient/browser/client_handler.h"
+#include "tests/cefclient/browser/cookie_handler.h"
+#include "tests/cefclient/browser/main_context_impl.h"
 #include "chromium_loader/signal_restore_posix.h"
 #include "browser_creator.h"
 
@@ -19,8 +20,28 @@ namespace {
 
 char* szWorkingDir;  // The current working directory
 bool message_loop = false;
+client::MainContextImpl* context;
 
 } // namespace
+
+
+void GetBrowserWindowInfo(CefWindowInfo& info, CefWindowHandle handle) {
+  // The size may be (0,0)
+
+  GtkWidget* canvas = (GtkWidget*)handle;
+
+  GtkAllocation* allocation = new GtkAllocation();
+  gtk_widget_get_allocation(canvas, allocation);
+
+  CefRect window_rect(0, 0, allocation->width, allocation->height);
+
+  DLOG(INFO) << "Window info: width: " << allocation->width << "; height=" << allocation->height;
+
+  delete allocation;
+
+  // Initialize window info to the defaults for a child window
+  info.SetAsChild(handle, window_rect);
+}
 
 // The linker has -fvisibility=hidden by default, so we need to explictly
 // export the jni functions.
@@ -30,10 +51,14 @@ bool message_loop = false;
 JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1init
   (JNIEnv *env, jobject jobj, jlong hwnd, jstring url, jobject chromiumset)
 {
+  DLOG(INFO) << "Enter init() method";
+
   // Make a simple argument.
-  const int argc = 1;
+  const int argc = 3;
   char** argv = (char**)malloc(argc * sizeof(*argv));
   argv[0] = strdup("java");
+  argv[1] = strdup("--no-sandbox");
+  argv[2] = strdup("--wait-for-debugger-children");
 
   CefMainArgs main_args(argc, argv);
   CefRefPtr<client::ClientApp> app(new client::ClientAppBrowser);
@@ -45,33 +70,48 @@ JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1init
 
   // Parse command line arguments. The passed in values are ignored on Windows.
   //AppInitCommandLine(argc, argv);
+  CefRefPtr<CefCommandLine> command_line = CefCommandLine::CreateCommandLine();
+  command_line->InitFromArgv(argc, argv);
+
+  // Create the main context object.
+  context = new client::MainContextImpl(command_line, true);
 
   CefSettings settings;
 
   // Populate the settings based on command line arguments.
   //AppGetSettings(settings);
 
+  // Populate the settings based on argument provided from Java
+  populate_cef_settings(env, chromiumset, settings);
+
   settings.multi_threaded_message_loop = message_loop;
-  settings.log_severity = LOGSEVERITY_DISABLE;
-
-  CefString path = CefString(szWorkingDir);
-
-#ifndef __LP64__
-  CefString(&settings.browser_subprocess_path) = path.ToString() + "/cef_runtime/linux32/cefclient";
-  CefString(&settings.resources_dir_path) = path.ToString() + "/cef_runtime/linux32";
-  CefString(&settings.locales_dir_path) = path.ToString() + "/cef_runtime/linux32/locales";
-#else
-  CefString(&settings.browser_subprocess_path) = path.ToString() + "/cef_runtime/linux64/cefclient";
-  CefString(&settings.resources_dir_path) = path.ToString() + "/cef_runtime/linux64";
-  CefString(&settings.locales_dir_path) = path.ToString() + "/cef_runtime/linux64/locales";
-#endif
+  settings.no_sandbox = true;
+  //settings.single_process = true;
 
   BackupSignalHandlers();
 
   // Initialize CEF.
-  CefInitialize(main_args, settings, app.get(), NULL);
+  context->Initialize(main_args, settings, app.get(), NULL);
 
   RestoreSignalHandlers();
+
+  // log all init settings
+  DLOG(INFO) << "settings.no_sandbox = " << settings.no_sandbox;
+  DLOG(INFO) << "settings.multi_threaded_message_loop = " << settings.multi_threaded_message_loop;
+  DLOG(INFO) << "settings.persist_session_cookies = " << settings.persist_session_cookies;
+  DLOG(INFO) << "settings.persist_user_preferences = " << settings.persist_user_preferences;
+  DLOG(INFO) << "settings.ignore_certificate_errors = " << settings.ignore_certificate_errors;
+  DLOG(INFO) << "settings.log_severity = " << settings.log_severity;
+  DLOG(INFO) << "settings.remote_debugging_port = " << settings.remote_debugging_port;
+  DLOG(INFO) << "settings.uncaught_exception_stack_size = " << settings.uncaught_exception_stack_size;
+  DLOG(INFO) << "settings.browser_subprocess_path = " << (std::string)CefString(&settings.browser_subprocess_path);
+  DLOG(INFO) << "settings.resources_dir_path = " << (std::string)CefString(&settings.resources_dir_path);
+  DLOG(INFO) << "settings.locales_dir_path = " << (std::string)CefString(&settings.locales_dir_path);
+  DLOG(INFO) << "settings.cache_path = " << (std::string)CefString(&settings.cache_path);
+  DLOG(INFO) << "settings.user_data_path = " << (std::string)CefString(&settings.user_data_path);
+  DLOG(INFO) << "settings.locale = " << (std::string)CefString(&settings.locale);
+  DLOG(INFO) << "settings.accept_language_list = " << (std::string)CefString(&settings.accept_language_list);
+  DLOG(INFO) << "settings.log_file = " << (std::string)CefString(&settings.log_file);
 
   GtkWidget* canvas = (GtkWidget*)hwnd;
   GtkWidget* vbox = gtk_vbox_new(FALSE, 0);
@@ -98,11 +138,15 @@ JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1init
 
   //CefRunMessageLoop();
   //CefShutdown();
+
+  DLOG(INFO) << "Exit init() method";
 }
 
 JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1new
   (JNIEnv *env, jobject jobj, jlong hwnd, jint id, jstring url, jobject chromiumset)
 {
+  DLOG(INFO) << "Enter new() method";
+
   const char* chr = env->GetStringUTFChars(url, 0);
   CefString wc = chr;
 
@@ -116,6 +160,8 @@ JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1new
   env->ReleaseStringUTFChars(url, chr);
   send_handler(env, jobj, (jlong)(void*)gh);
   get_browser_settings(env, chromiumset, gh->csettings);
+
+  DLOG(INFO) << "Exit new() method";
 }
 
 JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1message_1loop
@@ -148,7 +194,7 @@ JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1shutdown
   }
 
   cleanup_jvm(env);
-  CefShutdown();
+  context->Shutdown();
 }
 
 JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1clean_1cookies
@@ -187,6 +233,8 @@ JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1resized
   gtk_widget_set_size_request(g_handler_local->vbox,
                               allocation->width,
                               allocation->height);
+
+  DLOG(INFO) << "browser_resized() method: Window info: width: " << allocation->width << "; height=" << allocation->height;
 
   delete allocation;
 }
