@@ -56,12 +56,31 @@ checkJavaIncludeMac() {
 }
 
 checkCefPrebuiltMac() {
-  APP_PATH="$PROJECT_DIR/cef_runtime/$PLATFORM/cefclient.app"
+  APP_ROOT_PATH="$PROJECT_DIR/cef_runtime/$PLATFORM"
+  APP_PATH="$APP_ROOT_PATH/cef/cefclient.app"
   if [ ! -e "$APP_PATH" ]; then
-    echo "Error: The prebuilt CEF release app is not found at $APP_PATH." \
-         "Libraries may not be found at link time. Did you download the correct" \
-         "CEF release and unzip it there?"
-    exit 1
+    CEF_VERSION=`cat $PROJECT_DIR/cef_runtime_version.txt`
+    CEF_FILENAME="cef_binary_${CEF_VERSION}_macosx64_client"
+    CEF_EXTENSION=".tar.bz2"
+
+    if [ ! -e "$APP_ROOT_PATH/$CEF_FILENAME$CEF_EXTENSION" ]; then
+      CEF_DONWLOAD_URL="http://opensource.spotify.com/cefbuilds/$CEF_FILENAME$CEF_EXTENSION"
+      wget -P $APP_ROOT_PATH $CEF_DONWLOAD_URL
+    fi
+    
+    mkdir -p $APP_ROOT_PATH/cef
+    tar xvf $APP_ROOT_PATH/$CEF_FILENAME$CEF_EXTENSION -C $APP_ROOT_PATH/cef --strip-components=2
+
+    pushd "$PROJECT_DIR/cef_runtime/$PLATFORM"
+    mkdir -p $PROJECT_DIR/out/Release/dist
+    zip -r "$PROJECT_DIR/out/Release/dist/$CEF_FILENAME.zip" ./cef
+    popd
+
+    if [ ! -e "$APP_PATH" ]; then
+      echo "Error: The prebuilt CEF release app is not found at $APP_PATH." \
+           "Libraries may not be found at link time. Did you download the correct" \
+           "CEF release and unzip it there?"
+    fi
   fi
 }
 

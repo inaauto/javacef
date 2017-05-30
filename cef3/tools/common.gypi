@@ -4005,6 +4005,9 @@
           'GCC_VERSION': '4.2',
           'GCC_WARN_ABOUT_MISSING_NEWLINE': 'YES',  # -Wnewline-eof
           'USE_HEADERMAP': 'NO',
+          'OTHER_CPLUSPLUSFLAGS': [
+            '-std=gnu++11',
+          ],
           'WARNING_CFLAGS': [
             '-Wall',
             '-Wendif-labels',
@@ -4014,6 +4017,8 @@
             # Don't warn about the "struct foo f = {0};" initialization
             # pattern.
             '-Wno-missing-field-initializers',
+            '-Wno-undefined-var-template',
+            '-Wno-c++11-narrowing',
           ],
           'conditions': [
             ['chromium_mac_pch', {'GCC_PRECOMPILE_PREFIX_HEADER': 'YES'},

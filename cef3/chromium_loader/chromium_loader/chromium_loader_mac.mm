@@ -15,12 +15,14 @@
 #include "include/cef_application_mac.h"
 #include "include/cef_browser.h"
 #include "include/cef_frame.h"
-#include "include/cef_runnable.h"
-#include "cefclient/browser/client_app_browser.h"
-#include "cefclient/browser/client_handler.h"
-#include "cefclient/browser/cookie_handler.h"
-#include "cefclient/browser/main_message_loop_std.h"
-#include "cefclient/common/client_switches.h"
+//#include "include/cef_runnable.h"
+#include "tests/shared/browser/client_app_browser.h"
+#include "tests/cefclient/browser/client_handler.h"
+#include "tests/cefclient/browser/cookie_handler.h"
+#include "tests/cefclient/browser/main_context_impl.h"
+#include "tests/shared/browser/main_message_loop_external_pump.h"
+#include "tests/shared/browser/main_message_loop_std.h"
+#include "tests/shared/common/client_switches.h"
 #include "chromium_loader/browser_creator.h"
 #include "chromium_loader/signal_restore_posix.h"
 
@@ -30,8 +32,8 @@ namespace {
 
 bool use_message_loop = false;
 bool handling_send_event = false;
-CefString resources_dir_path;
-client::MainMessageLoopStd* message_loop = NULL;
+client::MainContextImpl* context;
+std::string resources_dir_path;
 
 } // namespace
 
@@ -145,38 +147,72 @@ void GetBrowserWindowInfo(CefWindowInfo& info, CefWindowHandle handle) {
 JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1init
   (JNIEnv *env, jobject jobj, jlong hwnd, jstring url, jobject chromiumset)
 {
-  CefMainArgs main_args(0, NULL);
+  DLOG(INFO) << "Enter init() method";
+
+  // Make a simple argument.
+  const int argc = 3;
+  char** argv = (char**)malloc(argc * sizeof(*argv));
+  argv[0] = strdup("java");
+  argv[1] = strdup("--no-sandbox");
+  argv[2] = strdup("--wait-for-debugger-children");
+
+  CefMainArgs main_args(argc, argv);
 
   CefRefPtr<CefApp> app(new client::ClientAppBrowser);
+
+  // Parse command-line arguments.
+  CefRefPtr<CefCommandLine> command_line = CefCommandLine::CreateCommandLine();
+  command_line->InitFromArgv(argc, argv);
+
+  // Create the main context object.
+  context = new client::MainContextImpl(command_line, true);
+  //scoped_ptr<MainContextImpl> context(new MainContextImpl(command_line, true));
+
   CefSettings settings;
 
+  // Populate the settings based on argument provided from Java
+  populate_cef_settings(env, chromiumset, settings);
+
   settings.multi_threaded_message_loop = use_message_loop;
-  settings.log_severity = LOGSEVERITY_DISABLE;
-  //settings.no_sandbox = true;
-  //settings.background_color = CefColorSetARGB(255, 255, 255, 255);
+  settings.no_sandbox = true;
+  //settings.single_process = true;
 
-  // Retrieve the current working directory.
-  char* szWorkingDir = getenv("JAVACEF_PATH");
-  if (!szWorkingDir)
-    szWorkingDir = (char*)calloc(1, sizeof(char));
-
-  CefString path = CefString(szWorkingDir);
-  CefString(&settings.browser_subprocess_path) = path.ToString() + "/cef_runtime/mac64/cefclient.app/Contents/Frameworks/cefclient Helper.app/Contents/MacOS/cefclient Helper";
-
-  // Need to set the path to find devtools resources.
-  resources_dir_path = path.ToString() + "/cef_runtime/mac64/cefclient.app/Contents/Frameworks/Chromium Embedded Framework.framework/Resources";
-  CefString(&settings.resources_dir_path) = resources_dir_path;
-
-  message_loop = new client::MainMessageLoopStd();
+  // Create the main message loop object.
+  scoped_ptr<client::MainMessageLoop> message_loop;
+  if (settings.external_message_pump)
+    message_loop = client::MainMessageLoopExternalPump::Create();
+  else
+    message_loop.reset(new client::MainMessageLoopStd);
 
   BackupSignalHandlers();
 
-  if (!CefInitialize(main_args, settings, app, NULL)) {
+  // Initialize CEF.
+  if (!context->Initialize(main_args, settings, app, NULL)) {
     fprintf(stderr, "Failed to initialize CEF.\n");
     return;
   }
 
   RestoreSignalHandlers();
+
+  // log all init settings
+  DLOG(INFO) << "settings.no_sandbox = " << settings.no_sandbox;
+  DLOG(INFO) << "settings.multi_threaded_message_loop = " << settings.multi_threaded_message_loop;
+  DLOG(INFO) << "settings.persist_session_cookies = " << settings.persist_session_cookies;
+  DLOG(INFO) << "settings.persist_user_preferences = " << settings.persist_user_preferences;
+  DLOG(INFO) << "settings.ignore_certificate_errors = " << settings.ignore_certificate_errors;
+  DLOG(INFO) << "settings.log_severity = " << settings.log_severity;
+  DLOG(INFO) << "settings.remote_debugging_port = " << settings.remote_debugging_port;
+  DLOG(INFO) << "settings.uncaught_exception_stack_size = " << settings.uncaught_exception_stack_size;
+  DLOG(INFO) << "settings.browser_subprocess_path = " << (std::string)CefString(&settings.browser_subprocess_path);
+  DLOG(INFO) << "settings.resources_dir_path = " << (std::string)CefString(&settings.resources_dir_path);
+  DLOG(INFO) << "settings.locales_dir_path = " << (std::string)CefString(&settings.locales_dir_path);
+  DLOG(INFO) << "settings.cache_path = " << (std::string)CefString(&settings.cache_path);
+  DLOG(INFO) << "settings.user_data_path = " << (std::string)CefString(&settings.user_data_path);
+  DLOG(INFO) << "settings.locale = " << (std::string)CefString(&settings.locale);
+  DLOG(INFO) << "settings.accept_language_list = " << (std::string)CefString(&settings.accept_language_list);
+  DLOG(INFO) << "settings.log_file = " << (std::string)CefString(&settings.log_file);
+
+  resources_dir_path = (std::string)CefString(&settings.resources_dir_path);
 
   NSView* view = (NSView*)hwnd;
   NSThread* thread = [NSThread currentThread];
@@ -206,6 +242,7 @@ JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1init
     CefShutdown();
   }
 */
+  DLOG(INFO) << "Exit init() method";
 }
 
 JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1new
@@ -256,12 +293,12 @@ JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1shutdown
     g_handler_local->id = -1;
   }
   cleanup_jvm(env);
-  CefShutdown();
+  context->Shutdown();
 
-  if (message_loop) {
-    delete message_loop;
-    message_loop = NULL;
-  }
+  //if (message_loop) {
+  //  delete message_loop;
+  //  message_loop = NULL;
+  //}
 }
 
 JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1clean_1cookies
@@ -299,7 +336,7 @@ JNIEXPORT void JNICALL Java_org_embedded_browser_Chromium_browser_1resized
     if ([subviews count] > 0) {
       NSView* browser_view = [subviews objectAtIndex:0];
       NSRect bound = [view bounds];
-      NSSize size = bound.size;
+      //NSSize size = bound.size;
       //printf("subviews %lu w %f h %f\n", [subviews count], size.width, size.height);
       [browser_view setFrame:bound];
     }
