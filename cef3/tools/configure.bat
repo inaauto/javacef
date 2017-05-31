@@ -5,6 +5,21 @@ if not exist %~dp0gyp goto download_gyp
 if "%JAVA_HOME%" == "" goto no_java
 
 echo JAVA_HOME: %JAVA_HOME%
+
+:parse
+IF "%~1"=="" GOTO endparse
+IF "%~1"=="msvs_2013" goto msvs_2013
+IF "%~1"=="msvs_2012" goto msvs_2012
+IF "%~1"=="msvs_2010" goto msvs_2010
+IF "%~1"=="msvs_2008" goto msvs_2008
+IF "%~1"=="ninja_win32" goto ninja_win32
+IF "%~1"=="ninja_win64" goto ninja_win64
+IF "%~1"=="ninja" goto ninja
+SHIFT
+GOTO parse
+:endparse
+REM ready for action!
+
 echo.
 echo Please choose your build environment:
 echo Note that ninja does not work well with non-English MSVC compilers.
@@ -61,18 +76,14 @@ if %i%==1 goto ninja_win32
 if %i%==2 goto ninja_win64
 
 :ninja_win32
+set GYP_GENERATORS=ninja
 set GYP_DEFINES="target_arch=ia32"
 goto generate_gyp
 
 :ninja_win64
+set GYP_GENERATORS=ninja
 set GYP_DEFINES="target_arch=x64"
 goto generate_gyp
-
-:generate_gyp
-cd %~dp0..
-python %~dp0gyp_chromium --toplevel-dir="." --depth="tools" -Djava_include_path="%JAVA_HOME%\include" javacef.gyp
-pause
-exit
 
 :no_java
 echo Error: JAVA_HOME environment variable is not set.
@@ -83,3 +94,9 @@ exit 1
 echo Checking out gyp into tools\gyp...
 call git clone https://chromium.googlesource.com/external/gyp %~dp0gyp
 goto gyp_ok
+
+:generate_gyp
+cd %~dp0..
+python %~dp0gyp_chromium --toplevel-dir="." --depth="tools" -Djava_include_path="%JAVA_HOME%\include" javacef.gyp
+rem pause
+rem exit
